@@ -12,7 +12,7 @@ En carpeta Resources debe haber:
 
 Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 
-##Ejemplo de uso
+## Ejemplo de uso con urls de testing/homologacion
 
 ```
 	$conf = [
@@ -35,34 +35,45 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
     $auth_conf = $conf['WSAA'];            
     $biller_conf = $conf['WSFEV1'];            
 
-	/**
-	 * Servicio de autenticación
-	 */ 
-	$auth = new Auth( 
-	    SoapClientFactory::create( $wsdl, $end_point ),                                 
-	    $auth_conf['PASSPHRASE'] 
-	);        
+    try{
 
-	/**
-	 * 	Servicio de facturacion, recibe como parametro el servicio de autenticación 
-	 */
-	$biller = new Biller( 
-	    SoapClientFactory::create( $biller_conf['WSDL'], $biller_conf['END_POINT'] ), 
-	    $auth, 
-	    new AccessTicket( $conf['CUIT'] ) 
-	);
+		/**
+		 * Servicio de autenticación
+		 */ 
+		$auth = new Afip\Services\Auth( 
+		    Afip\SoapClientFactory::create( $wsdl, $end_point ),                                 
+		    $auth_conf['PASSPHRASE'] 
+		);        
 
-	//solicita cae y cae_validdate
-	return $biller->requestCAE([  
-		//Los datos de facturacion a enviar a la afip, para que los valida y nos responda con el cae
-		//Los datos a enviar se pueden ver en el manual de F.E.
-	]);
+		/**
+		 * 	Servicio de facturacion, recibe como parametro el servicio de autenticación 
+		 */
+		$biller = new Afip\Services\Biller( 
+		    Afip\SoapClientFactory::create( $biller_conf['WSDL'], $biller_conf['END_POINT'] ), 
+		    $auth, 
+		    new Afip\AccessTicket( $conf['CUIT'] ) 
+		);
+
+		//solicita cae y cae_validdate  [ 'cae' => '', 'cae_validdate' => '' ]
+		$data = $biller->requestCAE([  
+			//Los datos de facturacion a enviar a la afip, para que esta los valide y nos responda con el cae
+			//Los datos a enviar se pueden ver en el manual de F.E.
+		]);
+
+    } catch ( WSException $e ) {
+            
+        var_dump([
+        	'description' => "{$e->getService()->getServiceName()}: {$e->getMessage()}",
+        	'log_api_response' => $e->getWSResponse
+    	]);
+    	
+	}
 
 ```
 
 
 --------------------------------------------------------------------------
-**Manuales**
+**Manuales AFIP**
 
 1. Auth: http://www.afip.gob.ar/ws/WSAA/Especificacion_Tecnica_WSAA_1.2.2.pdf
 
