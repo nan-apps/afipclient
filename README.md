@@ -3,7 +3,7 @@
 1. `Auth` permite interactuar con el web service de autenticacion WSAA
 2. `Biller` permite interactuar con el servicio de facturacion electronica WSFEV1
 
-## Resources
+## Carpeta Resources
 
 En carpeta Resources debe haber: 
 
@@ -11,6 +11,9 @@ En carpeta Resources debe haber:
 2. `cert.key` es la llave con el cual generamos nuestro CSR. El CSR es lo que le enviamos a la afip para obtener el `.pem`
 
 Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
+
+## Carpeta Temp
+Debe tener permisos de escritura
 
 ## Ejemplo de uso con urls de testing/homologacion
 
