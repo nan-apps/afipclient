@@ -36,7 +36,6 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
     $biller_conf = $conf['WSFEV1'];            
 
     try{
-
 		/**
 		 * Servicio de autenticación
 		 */ 
@@ -60,7 +59,6 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 
 		//$params debe ser un array con los datos de facturacion a enviar a la afip. 
 		//Ej mas abajo y data completa en manual de F.E.
-
 
     } catch ( WSException $e ) {
             
