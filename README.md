@@ -54,12 +54,13 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 		    new Afip\AccessTicket( $conf['CUIT'] ) 
 		);
 
-		//solicita cae y cae_validdate  [ 'cae' => '', 'cae_validdate' => '' ]
-		$data = $biller->requestCAE([  
-			/*Los datos de facturacion a enviar a la afip, para que esta los valide 
-			  y nos responda con el cae
-			  Los datos a enviar se pueden ver en el manual de F.E. Ej mas abajo*/
-		]);
+		
+		//Solicitar cae y cae_validdate  [ 'cae' => '', 'cae_validdate' => '' ]
+		$data = $biller->requestCAE( $params );
+
+		//$params debe ser un array con los datos de facturacion a enviar a la afip. 
+		//Ej mas abajo y data completa en manual de F.E.
+
 
     } catch ( WSException $e ) {
             
@@ -77,7 +78,7 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 ### Ejemplo de datos
 
 ```
-	$data = [
+	$params = [
             'Cuit' => 'xxxxxxxxx',
             'CantReg' => 1,
             'PtoVta' => 1,
