@@ -64,7 +64,7 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
             
         var_dump([
         	'description' => "{$e->getService()->getServiceName()}: {$e->getMessage()}",
-        	'log_api_response' => $e->getWSResponse
+        	'log_api_response' => $e->getWSResponse()
     	]);
 
 	}
@@ -75,7 +75,7 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 
 ### Ejemplo de datos
 
-```
+```php
 	$params = [
             'Cuit' => 'xxxxxxxxx',
             'CantReg' => 1,
