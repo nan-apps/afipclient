@@ -14,7 +14,7 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 
 ## Ejemplo de uso con urls de testing/homologacion
 
-```
+```php
 	$conf = [
 		'AFIP_API_CONF' => [
 	        'CUIT' => 'xxxxxxxxxxx',
@@ -34,6 +34,7 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
     $biller_conf = $conf['WSFEV1'];            
 
     try{
+
 		/**
 		 * Servicio de autenticación
 		 */ 
@@ -51,12 +52,13 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 		    new Afip\AccessTicket( $conf['CUIT'] ) 
 		);
 
-		
-		//Solicitar cae y cae_validdate  [ 'cae' => '', 'cae_validdate' => '' ]
+		/**
+		 * Solicitar cae y cae_validdate  [ 'cae' => '', 'cae_validdate' => '' ]
+		 * $params debe ser un array con los datos de facturacion a enviar a la afip.  
+		 * Ej mas abajo y data completa en manual de F.E. 
+		 */		
 		$data = $biller->requestCAE( $params );
 
-		//$params debe ser un array con los datos de facturacion a enviar a la afip. 
-		//Ej mas abajo y data completa en manual de F.E.
 
     } catch ( WSException $e ) {
             
