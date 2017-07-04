@@ -16,7 +16,6 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 
 ```
 	$conf = [
-
 		'AFIP_API_CONF' => [
 	        'CUIT' => 'xxxxxxxxxxx',
 	        'WSAA' => [
@@ -28,8 +27,7 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 	            'WSDL'      => 'https://wswhomo.afip.gov.ar/wsfev1/service.asmx?wsdl',
 	            'END_POINT' => 'https://wswhomo.afip.gov.ar/wsfev1/service.asmx'
 	        ]
-    	],
-
+    	]
 	];
 
     $auth_conf = $conf['WSAA'];            
