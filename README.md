@@ -41,7 +41,7 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 		 * Servicio de autenticación
 		 */ 
 		$auth = new Afip\Services\Auth( 
-		    Afip\SoapClientFactory::create( $wsdl, $end_point ),                                 
+		    Afip\SoapClientFactory::create( $auth_conf['WSDL'], $auth_conf['END_POINT'] ),                                 
 		    $auth_conf['PASSPHRASE'] 
 		);        
 
@@ -66,7 +66,7 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
         	'description' => "{$e->getService()->getServiceName()}: {$e->getMessage()}",
         	'log_api_response' => $e->getWSResponse
     	]);
-    	
+
 	}
 
 ```
