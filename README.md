@@ -46,7 +46,7 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 		);        
 
 		/**
-		 * 	Servicio de facturacion, recibe como parametro el servicio de autenticación 
+		 * Servicio de facturacion, recibe como parametro el servicio de autenticación 
 		 */
 		$biller = new Afip\Services\Biller( 
 		    Afip\SoapClientFactory::create( $biller_conf['WSDL'], $biller_conf['END_POINT'] ), 
@@ -56,8 +56,9 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 
 		//solicita cae y cae_validdate  [ 'cae' => '', 'cae_validdate' => '' ]
 		$data = $biller->requestCAE([  
-			//Los datos de facturacion a enviar a la afip, para que esta los valide y nos responda con el cae
-			//Los datos a enviar se pueden ver en el manual de F.E.
+			/*Los datos de facturacion a enviar a la afip, para que esta los valide 
+			  y nos responda con el cae
+			  Los datos a enviar se pueden ver en el manual de F.E. Ej mas abajo*/
 		]);
 
     } catch ( WSException $e ) {
@@ -71,6 +72,35 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 
 ```
 
+------------------------------------------------------------------------
+
+### Ejemplo de datos
+
+```
+	$data = [
+            'Cuit' => 'xxxxxxxxx',
+            'CantReg' => 1,
+            'PtoVta' => 1,
+            'CbteTipo' => 2, //B
+            'Concepto' => 2, //servicios
+            'DocTipo' => 80, //80=CUIL
+            'DocNro' => $contact->getContactDni(),
+            'CbteDesde' => null, //si es null lo obtiene Biller consultando a la afip
+            'CbteHasta' => null, 
+            'CbteFch' => '20170505',
+            'ImpNeto' => 0,
+            'ImpTotConc' => 0, 
+            'ImpIVA' => 0,
+            'ImpTrib' => 0,
+            'ImpOpEx' => 0,
+            'ImpTotal' => $amount, 
+            'FchServDesde' => '20170401', 
+            'FchServHasta' => '20170431', 
+            'FchVtoPago' => '20170531',
+            'MonId' => 'PES', //PES 
+            'MonCotiz' => 1, //1 
+        ];
+```
 
 --------------------------------------------------------------------------
 **Manuales AFIP**
