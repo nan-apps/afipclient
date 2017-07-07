@@ -54,7 +54,12 @@ Debe tener permisos de escritura
 		);
 
 		/**
-		 * Solicitar cae y cae_validdate  [ 'cae' => '', 'cae_validdate' => '' ]
+		 * Solicitar cae y cae_validdate y otros datos [ string    'cae' => '',  
+         *                                               \DateTime 'cae_validdate' => null, 
+         *                                               int       'invoice_number' => 0, 
+         *                                               string    'tax_id' => '', 
+         *                                               \DateTime 'invoice_date' => null
+         *                                               stdClass  'full_response' => null ]
 		 * $params debe ser un array con los datos de facturacion a enviar a la afip.  
 		 * Ej mas abajo y data completa en manual de F.E. 
 		 */		
