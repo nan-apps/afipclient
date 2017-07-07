@@ -68,7 +68,7 @@ Class Auth extends WebService implements AccessTicketManager{
 		$ltr = $this->_createLoginTicketRequest( $service_name );
 		
 		//Lo firmo
-		$ltr_cms = $this->_encodeLoginTicketRequest( $ltr );
+		$ltr_cms = $this->_signLoginTicketRequest( $ltr );
 
 		//envio el TRA firmado al WS 
 		$response = $this->_sendLoginTicketRequest( $ltr_cms );
@@ -172,7 +172,7 @@ Class Auth extends WebService implements AccessTicketManager{
 	 * @return string $ltr_cms Cryptographic Message Syntax
 	 * @throws WSException 
 	 */
-	private function _encodeLoginTicketRequest( $ltr_file ){
+	private function _signLoginTicketRequest( $ltr_file ){
 
 		try {
 	        

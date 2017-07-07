@@ -18,23 +18,21 @@ Debe tener permisos de escritura
 ## Ejemplo de uso con urls de testing/homologacion
 
 ```php
-	$conf = [
-		'AFIP_API_CONF' => [
-	        'CUIT' => 'xxxxxxxxxxx',
-	        'WSAA' => [
-	            'PASSPHRASE' => '', //opcional
-	            'WSDL'       => 'https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl',
-	            'END_POINT'  => 'https://wsaahomo.afip.gov.ar/ws/services/LoginCms'
-	        ],
-	        'WSFEV1' => [
-	            'WSDL'      => 'https://wswhomo.afip.gov.ar/wsfev1/service.asmx?wsdl',
-	            'END_POINT' => 'https://wswhomo.afip.gov.ar/wsfev1/service.asmx'
-	        ]
-    	]
+	$conf = [		
+        'cuit' => 'xxxxxxxxxxx',
+        'auth' => [
+            'passprhase' => '', //opcional
+            'wsdl'       => 'https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl',
+            'end_point'  => 'https://wsaahomo.afip.gov.ar/ws/services/LoginCms'
+        ],
+        'biller' => [
+            'wsdl'      => 'https://wswhomo.afip.gov.ar/wsfev1/service.asmx?wsdl',
+            'end_point' => 'https://wswhomo.afip.gov.ar/wsfev1/service.asmx'
+        ]    	
 	];
 
-    $auth_conf = $conf['WSAA'];            
-    $biller_conf = $conf['WSFEV1'];            
+    $auth_conf = $conf['auth'];            
+    $biller_conf = $conf['biller'];            
 
     try{
 
@@ -42,17 +40,17 @@ Debe tener permisos de escritura
 		 * Servicio de autenticación
 		 */ 
 		$auth = new Afip\Services\Auth( 
-		    Afip\SoapClientFactory::create( $auth_conf['WSDL'], $auth_conf['END_POINT'] ),                                 
-		    $auth_conf['PASSPHRASE'] 
+		    Afip\SoapClientFactory::create( $auth_conf['wsdl'], $auth_conf['end_point'] ),                                 
+		    $auth_conf['passprhase'] 
 		);        
 
 		/**
 		 * Servicio de facturacion, recibe como parametro el servicio de autenticación 
 		 */
 		$biller = new Afip\Services\Biller( 
-		    Afip\SoapClientFactory::create( $biller_conf['WSDL'], $biller_conf['END_POINT'] ), 
+		    Afip\SoapClientFactory::create( $biller_conf['wsdl'], $biller_conf['end_point'] ), 
 		    $auth, 
-		    new Afip\AccessTicket( $conf['CUIT'] ) 
+		    new Afip\AccessTicket( $conf['cuit'] ) 
 		);
 
 		/**

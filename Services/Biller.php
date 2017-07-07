@@ -33,7 +33,7 @@ Class Biller extends WebService{
 		$this->access_ticket_manager = $access_ticket_manager;
 
 		if( !$access_ticket->getTaxId() ){
-			throw new WSException("El AccessTicket debe tener cuit");			
+			throw new WSException("El Ticket de acceso al WSFE de Afip debe tener cuit", $this);			
 		}
 
 		$this->access_ticket = $access_ticket;
@@ -59,31 +59,50 @@ Class Biller extends WebService{
 	/**
 	 * Solicitar cae y fecha de vencimiento al WS de facturacion
 	 * @param array $data  
-	 * @return array [ string 'cae' => '',  \DateTime 'cae_validdate' => '' ]	 
+	 * @return array [ string 'cae' => '',  \DateTime 'cae_validdate' => null, 
+	 *                 int 'invoice_number' => 0, string 'tax_id' => '', \DateTime 'invoice_date' => null
+	 * 				   stdClass 'full_response' => null ]	 
 	 * @throws  WSException 
 	 */
 	public function requestCAE( $data ){
 
 		$request_params = $this->_buildRequestCAEParams( $data );
-		
+		pr($request_params);
 		$response = $this->soap_client->FECAESolicitar( $request_params );
 
-		$cae = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE;
-		$cae_validdate = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAEFchVto;
-
-		if( isset( $response->FECAESolicitarResult->Errors ) || !$cae || !$cae_validdate ){
+		if( isset( $response->FECAESolicitarResult->Errors ) ){
 			throw new WSException( "Error obteniendo CAE", $this,	 
 	    						   WSHelper::export_response( $response ) );
 		}
+		prd($this->_parseResponse( $response ));
+		return $this->_parseResponse( $response );
+		
+	}	
 
-		$date_data = date_parse_from_format( $cae_validdate );
+
+	/**
+	 * Parsea y prepara array para ser devuelto
+	 * @param Array $response
+	 * @return Array
+	 */ 
+	private function _parseResponse( Array $response = array() ){
+
+		$cae = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE;
+		$cae_validdate = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAEFchVto;
+		$invoice_number = (int) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CbteDesde;
+		$tax_id = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->DocNro;
+		$invoice_date = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CbteFch;
 
 		return [ 
 			'cae' => $cae, 
-			'cae_validdate' => date_create_from_format( 'Ymd', $cae_validdate )
+			'cae_validdate' => date_create_from_format( 'Ymd', $cae_validdate ),
+			'invoice_number' => $invoice_number,
+			'invoice_date' => date_create_from_format( 'Ymd', $invoice_date ),
+			'tax_id' => $tax_id,
+			'full_response' => $response,
 		];	
-		
-	}	
+
+	}
 
 	/**
 	 * Armar el array para ser enviado al servicio y solicitar el cae
@@ -93,10 +112,10 @@ Class Biller extends WebService{
 	private function _buildRequestCAEParams( Array $data = [] ){
 
 		if( !$data['CbteDesde'] ){
-			$last_inv_number = $this->_getLastAuthorizedDoc( $data );
-			$inv_number = $last_inv_number + 1;			
+			$last_invoice_number = $this->_getLastAuthorizedDoc( $data );
+			$invoice_number = $last_invoice_number + 1;			
 		} else {
-			$inv_number = $data['CbteDesde'];
+			$invoice_number = $data['CbteDesde'];
 		}
 
 		$params = [ 
@@ -113,8 +132,8 @@ Class Biller extends WebService{
 							[  'Concepto' => $data['Concepto'],
 									'DocTipo' => $data['DocTipo'],
 									'DocNro' => $data['DocNro'],
-									'CbteDesde' => $inv_number,
-									'CbteHasta' => $inv_number,
+									'CbteDesde' => $invoice_number,
+									'CbteHasta' => $invoice_number,
 									'CbteFch' => $data['CbteFch'],
 									'ImpNeto' => $data['ImpNeto'],
 									'ImpTotConc' => $data['ImpTotConc'], 
