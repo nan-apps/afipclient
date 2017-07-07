@@ -99,7 +99,7 @@ Class Biller extends WebService{
 			'invoice_number' => $invoice_number,
 			'invoice_date' => date_create_from_format( 'Ymd', $invoice_date ),
 			'tax_id' => $tax_id,
-			'full_response' => $response,
+			'full_response' => WSHelper::export_response( $response )
 		];	
 
 	}
