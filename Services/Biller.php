@@ -67,14 +67,14 @@ Class Biller extends WebService{
 	public function requestCAE( $data ){
 
 		$request_params = $this->_buildRequestCAEParams( $data );
-		pr($request_params);
+		
 		$response = $this->soap_client->FECAESolicitar( $request_params );
 
 		if( isset( $response->FECAESolicitarResult->Errors ) ){
 			throw new WSException( "Error obteniendo CAE", $this,	 
 	    						   WSHelper::export_response( $response ) );
 		}
-		prd($this->_parseResponse( $response ));
+		
 		return $this->_parseResponse( $response );
 		
 	}	
