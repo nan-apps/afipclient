@@ -1,8 +1,8 @@
 <?php
-namespace Afip;
+namespace AfipServices;
 
-use Afip\AccessTicket;
-use Afip\WebService;
+use AfipServices\AccessTicket;
+use AfipServices\WebServices\WebService;
 
 interface AccessTicketManager{
 

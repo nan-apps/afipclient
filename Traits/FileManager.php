@@ -1,7 +1,7 @@
 <?php
-namespace Afip\Traits;
+namespace AfipServices\Traits;
 
-use Afip\WSException;
+use AfipServices\WSException;
 
 trait FileManager {
 

@@ -1,5 +1,5 @@
 <?php
-namespace Afip;
+namespace AfipServices\WebServices;
 
 abstract class WebService{
 

@@ -1,6 +1,5 @@
 <?php
-
-namespace Afip;
+namespace AfipServices;
 
 Class SoapClientFactory{
 

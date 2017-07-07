@@ -1,7 +1,7 @@
 <?php
-namespace Afip;
+namespace AfipServices;
 
-use Afip\WebService;
+use AfipServices\WebServices\WebService;
 
 class WSException extends \Exception {
     

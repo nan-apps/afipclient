@@ -1,12 +1,12 @@
 <?php
-namespace Afip\Services;
+namespace AfipServices\WebServices;
 
-use Afip\WebService;
-use Afip\WSException;
-use Afip\WSHelper;
-use Afip\AccessTicket;
-use Afip\AccessTicketManager;
-use Afip\Traits\FileManager;
+use AfipServices\WSException;
+use AfipServices\WSHelper;
+use AfipServices\AccessTicket;
+use AfipServices\AccessTicketManager;
+use AfipServices\WebServices\WebService;
+use AfipServices\Traits\FileManager;
 
 /**
  * WebService de facturación electrónica, WSFEV1 de Afip 

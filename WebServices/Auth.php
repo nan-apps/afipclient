@@ -1,12 +1,12 @@
 <?php
-namespace Afip\Services;
+namespace AfipServices\WebServices;
 
-use Afip\WSException;
-use Afip\WebService;
-use Afip\WSHelper;
-use Afip\AccessTicketManager;
-use Afip\AccessTicket;
-use Afip\Traits\FileManager;
+use AfipServices\WSException;
+use AfipServices\WSHelper;
+use AfipServices\AccessTicketManager;
+use AfipServices\AccessTicket;
+use AfipServices\WebServices\WebService;
+use AfipServices\Traits\FileManager;
 
 /**
  * WebService de Autenticación y Autorización
