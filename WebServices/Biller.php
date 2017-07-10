@@ -4,6 +4,7 @@ namespace AfipServices\WebServices;
 use AfipServices\WSException;
 use AfipServices\WSHelper;
 use AfipServices\AccessTicket;
+use AfipServices\AccessTicketClient;
 use AfipServices\AccessTicketManager;
 use AfipServices\WebServices\WebService;
 use AfipServices\Traits\FileManager;
@@ -11,39 +12,43 @@ use AfipServices\Traits\FileManager;
 /**
  * WebService de facturación electrónica, WSFEV1 de Afip 
  */
-Class Biller extends WebService{
+Class Biller extends WebService implements AccessTicketClient{
 
 	use FileManager;
 
 	protected $service_name = 'wsfe';
-	protected $soap_client = null;
-	protected $access_ticket_manager = null;
-	protected $access_ticket = null;
+	protected $soap_client;
+	protected $access_ticket_manager;
+	protected $access_ticket;
 
 	/**
 	 * @param SoapClient $soap_client SoapClientFactory::create( [wsdl], [end_point] )
 	 * @param AccessTicketManager $acces_ticket_manager el objeto encargado de procesar y completar el AccessTicket
-	 * @param AccessTicket $access_ticker 
+	 * @param AccessTicket $access_ticket
 	 */ 
-	public function __construct( \SoapClient $soap_client,
+	public function __construct( \SoapClient $soap_client = null,
 								 AccessTicketManager $access_ticket_manager = null, 
 								 AccessTicket $access_ticket = null  ){
 
 		$this->soap_client = $soap_client;
 		$this->access_ticket_manager = $access_ticket_manager;
-
-		if( !$access_ticket->getTaxId() ){
-			throw new WSException("El Ticket de acceso al WSFE de Afip debe tener cuit", $this);			
-		}
-
 		$this->access_ticket = $access_ticket;
 	}
 
 	/**
 	 * Devuelve el nombre del servicio
+	 * @return string
 	 */ 
 	public function getServiceName(){
 		return $this->service_name;
+	}
+
+	/**
+	 * Devuelve el access ticket
+	 * @return AccessTicket
+	 */ 
+	public function getAccessTicket(){
+		return $this->access_ticket;
 	}
 
 	/**
@@ -51,7 +56,16 @@ Class Biller extends WebService{
 	 * @return AccessTicket
 	 */ 
 	public function getAT(){
-		$this->access_ticket_manager->processAccessTicket( $this, $this->access_ticket );
+
+		if( !$this->access_ticket ){
+			throw new WSException("Ticket de acceso requerido para operar", $this);			
+		}
+
+		if( !$this->access_ticket->getTaxId() ){
+			throw new WSException("El Ticket de acceso al WSFE de Afip debe tener cuit", $this);			
+		}
+
+		$this->access_ticket_manager->processAccessTicket( $this );
 		return $this->access_ticket;
 	}
 

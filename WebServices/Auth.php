@@ -4,6 +4,7 @@ namespace AfipServices\WebServices;
 use AfipServices\WSException;
 use AfipServices\WSHelper;
 use AfipServices\AccessTicketManager;
+use AfipServices\AccessTicketClient;
 use AfipServices\AccessTicket;
 use AfipServices\WebServices\WebService;
 use AfipServices\Traits\FileManager;
@@ -27,8 +28,6 @@ Class Auth extends WebService implements AccessTicketManager{
 	 */ 
 	public function __construct( \SoapClient $soap_client = null, $passphrase = '' ){
 
-		$this->tempFolderPermissionsCheck();
-
 		$this->soap_client = $soap_client;	
 		$this->passphrase = $passphrase;
 
@@ -37,19 +36,26 @@ Class Auth extends WebService implements AccessTicketManager{
 	/**
 	 * @param WebService $client  el servicio ciente que quiere procesar el ticket de acceso
 	 * @param AccessTicket $access_ticket ticket de acceso a ser procesado
+	 * @throws WSException
 	 */ 
-	public function processAccessTicket( WebService $service, AccessTicket $access_ticket ){
+	public function processAccessTicket( WebService $service ){
+
+		if ( !$service instanceof AccessTicketClient )
+        	throw new WSException( 'El servicio debe ser una instancia de AccessTicketClient', $this );
 
 		$service_name = $service->getServiceName();
+		$access_ticket = $service->getAccessTicket();
 
 		if( is_null( $this->client_access_ticket ) ){
 			$this->_buildAccessTicketFromStorage( $service_name, $access_ticket );
+			//new AccessTicketBuilder();
 		} else {
 			$access_ticket = $this->client_access_ticket;
 		}													 
 
 		if( $access_ticket->isEmpty() || $access_ticket->isExpired() ){
 			$this->_process( $service_name, $access_ticket );
+			//new AccessTicketProcessor( $service_name, $access_ticket );
 		}
 
 		$this->client_access_ticket = $access_ticket;
@@ -175,6 +181,8 @@ Class Auth extends WebService implements AccessTicketManager{
 	private function _signLoginTicketRequest( $ltr_file ){
 
 		try {
+
+			$this->tempFolderPermissionsCheck();
 	        
 	        $ltr_cms_file = tempnam( $this->getTempFolderPath(), "LoginTicketRequest.xml.cms");
 
@@ -217,6 +225,11 @@ Class Auth extends WebService implements AccessTicketManager{
 	 * @return stdClass
 	 */ 
 	private function _sendLoginTicketRequest( $ltr_cms ){
+
+		if( !$this->soap_client ){
+			throw new WSException( "El cliente Soap es necesario para operar", $this );
+		}
+
 		return $this->soap_client->loginCms( [ 'in0' => $ltr_cms ] );
 	}
 

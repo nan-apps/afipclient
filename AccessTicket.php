@@ -103,7 +103,7 @@ class AccessTicket{
     }
 
     /**
-     * True si el momento de vencimiento y paso
+     * True si el momento de vencimiento ya paso
      * @return boolean
      */ 
     public function isExpired(){
