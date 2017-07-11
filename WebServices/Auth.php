@@ -28,11 +28,15 @@ Class Auth extends WebService implements AccessTicketManager{
 	 * @param string $passphrase contraseña para firmar el ticket de requerimiento de acceso.
 	 */ 
 	public function __construct( \SoapClient $soap_client, 
-		                          AccessTicketLoader $access_ticket_loader, 		                          
+		                          AccessTicketLoader $access_ticket_loader, 		 
+		                          $cert_file_name,
+		                          $key_file_name,                         
 		                          $passphrase = '' ){
 
 		$this->soap_client = $soap_client;	
 		$this->access_ticket_loader = $access_ticket_loader;
+		$this->cert_file_name = $cert_file_name;
+		$this->key_file_name = $key_file_name;
 		$this->passphrase = $passphrase;
 
 	}
@@ -152,14 +156,14 @@ Class Auth extends WebService implements AccessTicketManager{
 	        
 	        $ltr_cms_file = tempnam( $this->getTempFolderPath(), "LoginTicketRequest.xml.cms");
 
-	        $cert_pem = file_get_contents( $this->getResourcesFilePath('cert.pem', true) );
-	        $cert_key = file_get_contents( $this->getResourcesFilePath('cert.key', true) );
+	        $cert = file_get_contents( $this->getResourcesFilePath( $this->cert_file_name, true) );
+	        $key = file_get_contents( $this->getResourcesFilePath( $this->key_file_name, true) );
 
 	        $rc = openssl_pkcs7_sign(
 	            $ltr_file,
 	            $ltr_cms_file,
-	            $cert_pem,
-	            [ $cert_key, $this->passphrase ],
+	            $cert,
+	            [ $key, $this->passphrase ],
 	            [],
 	            !PKCS7_DETACHED
 	        );

@@ -22,7 +22,9 @@ $biller_conf = $conf['wsfev1'];
 
 /* Servicio de autenticacion */
 $auth = AuthFactory::create( $auth_conf['wsdl'], 
-                             $auth_conf['end_point'], 
+                             $auth_conf['end_point'],
+                             $auth_conf['cert_file_name'],
+                             $auth_conf['key_file_name'],
                              $auth_conf['passprhase']  );
 
 /* Servicio de facturación */            
