@@ -23,22 +23,10 @@ class AccessTicket{
                                  $expiration_time = null ){
 
         $this->tax_id = $tax_id;
-        $this->build( $token, $sign, $generation_time, $expiration_time );
-    }
-
-    /**
-     * @param string $token
-     * @param string $sign
-     * @param string $generation_time
-     * @param string $expiration_time
-     */ 
-    public function build( $token = null, $sign = null, $generation_time = null,
-                           $expiration_time = null ){
         $this->token = $token;
         $this->sign = $sign;
         $this->generation_time = $generation_time;
         $this->expiration_time = $expiration_time;
-
     }
 
     /**
@@ -83,6 +71,38 @@ class AccessTicket{
      */ 
     public function getTaxId(){
         return $this->tax_id;
+    }
+
+    /**
+     * Setea token
+     * @param string $token
+     */ 
+    public function setToken( $token ){
+        return $this->token = $token;
+    }
+
+    /**
+     * Setea sign
+     * @param string $sign
+     */ 
+    public function setSign( $sign ){
+        return $this->sign = $sign;
+    }
+
+    /**
+     * Setea fecha generacion
+     * @param string $generation_time
+     */ 
+    public function setGenerationTime( $generation_time ){
+        return $this->generation_time = $generation_time;
+    }
+
+    /**
+     * Setea fecha vencimiento
+     * @param string $expiration_time
+     */ 
+    public function setExpirationTime( $expiration_time ){
+        return $this->expiration_time = $expiration_time;
     }
 
     /**

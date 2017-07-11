@@ -6,6 +6,7 @@ use AfipServices\WSHelper;
 use AfipServices\AccessTicketManager;
 use AfipServices\AccessTicketClient;
 use AfipServices\AccessTicket;
+use AfipServices\AccessTicketLoader;
 use AfipServices\WebServices\WebService;
 use AfipServices\Traits\FileManager;
 
@@ -20,15 +21,18 @@ Class Auth extends WebService implements AccessTicketManager{
 
 	private $passphrase;
 	private $soap_client;
-	private $client_access_ticket;
+	private $clients_access_tickets = [];
 
 	/**
 	 * @param SoapClient $soap_client SoapClientFactory::create( [wsdl], [end_point] )
 	 * @param string $passphrase contraseña para firmar el ticket de requerimiento de acceso.
 	 */ 
-	public function __construct( \SoapClient $soap_client = null, $passphrase = '' ){
+	public function __construct( \SoapClient $soap_client, 
+		                          AccessTicketLoader $access_ticket_loader, 		                          
+		                          $passphrase = '' ){
 
 		$this->soap_client = $soap_client;	
+		$this->access_ticket_loader = $access_ticket_loader;
 		$this->passphrase = $passphrase;
 
 	}
@@ -43,23 +47,15 @@ Class Auth extends WebService implements AccessTicketManager{
 		if ( !$service instanceof AccessTicketClient )
         	throw new WSException( 'El servicio debe ser una instancia de AccessTicketClient', $this );
 
-		$service_name = $service->getServiceName();
-		$access_ticket = $service->getAccessTicket();
+        //si el ticket del servicio esta vacio o vencido y no hay en storage o este tmb esta vacio o vencido => proceso
+		if( ( $service->getAccessTicket()->isEmpty() || $service->getAccessTicket()->isExpired() ) 			 
+			  && !$this->access_ticket_loader->loadFromStorage( $service ) ){
 
-		if( is_null( $this->client_access_ticket ) ){
-			$this->_buildAccessTicketFromStorage( $service_name, $access_ticket );
-			//new AccessTicketBuilder();
-		} else {
-			$access_ticket = $this->client_access_ticket;
-		}													 
+			$this->_process( $service );
 
-		if( $access_ticket->isEmpty() || $access_ticket->isExpired() ){
-			$this->_process( $service_name, $access_ticket );
-			//new AccessTicketProcessor( $service_name, $access_ticket );
-		}
+		}										 	
 
-		$this->client_access_ticket = $access_ticket;
-		
+				
 	}
 
 	/**
@@ -68,7 +64,9 @@ Class Auth extends WebService implements AccessTicketManager{
 	 * @param $service_name nombre del servicio que requiere el acceso
 	 * @param AccessTicket $access_ticket ticket a ser procesado
 	 */
-	private function _process( $service_name, AccessTicket $access_ticket = null ){
+	private function _process( WebService $service ){
+
+		$service_name = $service->getServiceName();
 
 		//Obtengo el ticket de requerimiento de acceso
 		$ltr = $this->_createLoginTicketRequest( $service_name );
@@ -86,7 +84,9 @@ Class Auth extends WebService implements AccessTicketManager{
 		$this->_saveAccessTicketData( $service_name, $access_ticket_data );
 
 		//genero el access_ticket a partir de los datos devueltos por el ws
-		$this->_buildAccessTicket( $access_ticket, $access_ticket_data );
+		//$this->_buildAccessTicket( $access_ticket, $access_ticket_data );
+
+		$this->access_ticket_loader->load( $service, $access_ticket_data );
 
 	}
 
@@ -97,7 +97,7 @@ Class Auth extends WebService implements AccessTicketManager{
 	 * @param string $access_ticket_data xml con datos de acceso
 	 * @return void
 	 */ 
-	private function _buildAccessTicket( AccessTicket $access_ticket, $access_ticket_data ){
+	/*private function _buildAccessTicket( AccessTicket $access_ticket, $access_ticket_data ){
 
 		$xml = simplexml_load_string( $access_ticket_data );
 
@@ -106,14 +106,14 @@ Class Auth extends WebService implements AccessTicketManager{
 							   (string) $xml->header->generationTime, 
 							   (string) $xml->header->expirationTime );
 		
-	}
+	}*/
 
 	/**
 	 * Si en disco hay datos para ticket de acceso, los levanta y buildea el AccessTicket con ellos
 	 * @param string $service_name nombre del servicio
 	 * @param AccessTicket $access_ticket a ser procesado
 	 */ 
-	private function _buildAccessTicketFromStorage( $service_name, AccessTicket $access_ticket ){
+	/*private function _buildAccessTicketFromStorage( $service_name, AccessTicket $access_ticket ){
 
 		$file = $this->getTempFilePath( "TA_{$service_name}.xml");
 		$access_ticket_data = "";
@@ -123,7 +123,7 @@ Class Auth extends WebService implements AccessTicketManager{
 			$this->_buildAccessTicket( $access_ticket, $access_ticket_data );			
 		}
 
-	}
+	}*/
 
 	/**
 	 * Generar Ticket de requerimiento de Acceso para un ws ( Login Ticket Request )
