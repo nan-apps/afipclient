@@ -26,9 +26,9 @@ Class Biller extends WebService implements AccessTicketClient{
 	 * @param AccessTicketManager $acces_ticket_manager el objeto encargado de procesar y completar el AccessTicket
 	 * @param AccessTicket $access_ticket
 	 */ 
-	public function __construct( \SoapClient $soap_client = null,
-								 AccessTicketManager $access_ticket_manager = null, 
-								 AccessTicket $access_ticket = null  ){
+	public function __construct( \SoapClient $soap_client,
+								 AccessTicketManager $access_ticket_manager, 
+								 AccessTicket $access_ticket  ){
 
 		$this->soap_client = $soap_client;
 		$this->access_ticket_manager = $access_ticket_manager;

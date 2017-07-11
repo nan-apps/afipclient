@@ -18,10 +18,10 @@ Class Auth extends WebService implements AccessTicketManager{
 	use FileManager;
 
 	private $service_name = 'wsaa';
-
 	private $passphrase;
 	private $soap_client;
-	private $clients_access_tickets = [];
+	private $cert_file_name;
+	private $key_file_name;
 
 	/**
 	 * @param SoapClient $soap_client SoapClientFactory::create( [wsdl], [end_point] )
@@ -196,11 +196,8 @@ Class Auth extends WebService implements AccessTicketManager{
 	 */ 
 	private function _sendLoginTicketRequest( $ltr_cms ){
 
-		if( !$this->soap_client ){
-			throw new WSException( "El cliente Soap es necesario para operar", $this );
-		}
-
 		return $this->soap_client->loginCms( [ 'in0' => $ltr_cms ] );
+
 	}
 
 }
