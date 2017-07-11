@@ -99,7 +99,7 @@ Class Biller extends WebService implements AccessTicketClient{
 	 * @param Array $response
 	 * @return Array
 	 */ 
-	private function _parseResponse( Array $response = array() ){
+	private function _parseResponse( \stdClass $response ){
 
 		$cae = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE;
 		$cae_validdate = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAEFchVto;

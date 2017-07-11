@@ -1,7 +1,7 @@
 <?php
 namespace AfipServices;
 
-use AfipServices\WebService;
+use AfipServices\WebServices\WebService;
 use AfipServices\Traits\FileManager;
 
 /**
