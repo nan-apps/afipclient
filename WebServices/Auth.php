@@ -92,40 +92,6 @@ Class Auth extends WebService implements AccessTicketManager{
 
 
 	/**
-	 * Buildea el access ticket
-	 * @param AccessTicket $access_ticket a ser procesado
-	 * @param string $access_ticket_data xml con datos de acceso
-	 * @return void
-	 */ 
-	/*private function _buildAccessTicket( AccessTicket $access_ticket, $access_ticket_data ){
-
-		$xml = simplexml_load_string( $access_ticket_data );
-
-		$access_ticket->build( (string) $xml->credentials->token, 
-							   (string) $xml->credentials->sign, 
-							   (string) $xml->header->generationTime, 
-							   (string) $xml->header->expirationTime );
-		
-	}*/
-
-	/**
-	 * Si en disco hay datos para ticket de acceso, los levanta y buildea el AccessTicket con ellos
-	 * @param string $service_name nombre del servicio
-	 * @param AccessTicket $access_ticket a ser procesado
-	 */ 
-	/*private function _buildAccessTicketFromStorage( $service_name, AccessTicket $access_ticket ){
-
-		$file = $this->getTempFilePath( "TA_{$service_name}.xml");
-		$access_ticket_data = "";
-
-		if( file_exists( $file ) ){
-			$access_ticket_data = file_get_contents( $file );			
-			$this->_buildAccessTicket( $access_ticket, $access_ticket_data );			
-		}
-
-	}*/
-
-	/**
 	 * Generar Ticket de requerimiento de Acceso para un ws ( Login Ticket Request )
 	 * @param $service_name Servicio al cual se quiere acceder
 	 * @return string

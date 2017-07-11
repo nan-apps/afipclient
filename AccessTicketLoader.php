@@ -12,6 +12,11 @@ class AccessTicketLoader{
 	use FileManager;
 
 
+	/**
+	 * Carga los datos al ticket de acceso del servicio
+	 * @param Service $service el servicio, el cual posee el access ticket a cargar
+	 * @param string $access_ticket_data datos a ser cargados
+	 */ 
 	public function load( WebService $service, $access_ticket_data ){
 
 		if ( !$service instanceof AccessTicketClient )
@@ -27,9 +32,8 @@ class AccessTicketLoader{
 	}
 
 	/**
-	 * Si en disco hay datos para ticket de acceso, los levanta y buildea el AccessTicket con ellos
-	 * @param string $service_name nombre del servicio
-	 * @param AccessTicket $access_ticket a ser procesado
+	 * Si en disco hay datos para ticket de acceso, los levanta y se los carga al servicio
+	 * @param Service $service el servicio, el cual posee el access ticket a cargar
 	 */ 
 	public function loadFromStorage( WebService $service ){
 
