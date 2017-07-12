@@ -1,16 +1,13 @@
 <?php
-namespace AfipServices;
+namespace AfipServices\WebServices\Auth;
 
 use AfipServices\WebServices\WebService;
-use AfipServices\Traits\FileManager;
+use AfipServices\AccessTicketClient;
 
 /**
  * Clase encargada de cargar el accessTicket en el servicio. 
  */
 class AccessTicketLoader{
-
-	use FileManager;
-
 
 	/**
 	 * Carga los datos al ticket de acceso del servicio
@@ -33,20 +30,19 @@ class AccessTicketLoader{
 
 	/**
 	 * Si en disco hay datos para ticket de acceso, los levanta y se los carga al servicio
+	 * @param AccessTicketStore $store
 	 * @param Service $service el servicio, el cual posee el access ticket a cargar
+	 * @return boolean true si levanto datos no expirados de access ticket
 	 */ 
-	public function loadFromStorage( WebService $service ){
+	public function loadFromStorage( AccessTicketStore $store, WebService $service ){
 
 		if ( !$service instanceof AccessTicketClient )
         	throw new WSException( 'El servicio debe ser una instancia de AccessTicketClient', $this );
 
-		$file = $this->getTempFilePath( "TA_{$service->getServiceName()}.xml");		
-		$access_ticket_data = "";
+        $access_ticket_data = $store->getDataFromStorage( $service );
 
-		if( file_exists( $file ) ){
-			$access_ticket_data = file_get_contents( $file );			
+        if( $access_ticket_data )
 			$this->load( $service, $access_ticket_data );			
-		}
 
 		return !$service->getAccessTicket()->isExpired();
 

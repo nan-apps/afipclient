@@ -3,7 +3,7 @@ namespace AfipServices;
 
 use AfipServices\WebServices\WebService;
 
-interface AccessTicketManager{
+interface AccessTicketProvider{
 
 	/**
 	 * @param WebService $service
