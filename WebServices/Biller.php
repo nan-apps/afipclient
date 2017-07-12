@@ -84,12 +84,7 @@ Class Biller extends WebService implements AccessTicketClient{
 		
 		$response = $this->soap_client->FECAESolicitar( $request_params );
 
-		if( isset( $response->FECAESolicitarResult->Errors ) ){
-			throw new WSException( "Error obteniendo CAE", $this,	 
-	    						   WSHelper::export_response( $response ) );
-		}
-		
-		return $this->_parseResponse( $response );
+		return $this->_validateAndParseResponse( $response );
 		
 	}	
 
@@ -99,9 +94,15 @@ Class Biller extends WebService implements AccessTicketClient{
 	 * @param Array $response
 	 * @return Array
 	 */ 
-	private function _parseResponse( \stdClass $response ){
+	private function _validateAndParseResponse( \stdClass $response ){
 
 		$cae = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE;
+
+		if( isset( $response->FECAESolicitarResult->Errors ) || !$cae ){
+			throw new WSException( "Error obteniendo CAE", $this,	 
+	    						   WSHelper::export_response( $response ) );
+		}
+
 		$cae_validdate = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAEFchVto;
 		$invoice_number = (int) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CbteDesde;
 		$tax_id = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->DocNro;
