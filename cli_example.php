@@ -37,7 +37,7 @@ $biller = new Biller(
 $data = array(
     'Cuit' => '123456789',
     'CantReg' => 1,
-    'PtoVta' => 1,
+    'PtoVta' => 1, //null para que lo obtenga utilizando el web service
     'CbteTipo' => 2, //B
     'Concepto' => 2, //servicios
     'DocTipo' => 80, //80=CUIL

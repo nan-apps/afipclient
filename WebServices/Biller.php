@@ -132,13 +132,16 @@ Class Biller extends WebService implements AccessTicketClient{
 			$invoice_number = $data['CbteDesde'];
 		}
 
+		$sale_point = $data['PtoVta'] ? $data['PtoVta'] : $this->_getAthorizedSalePoint();
+		
+
 		$params = [ 
 		 	'Auth' => $this->_getAuthParams( $data ),
 			'FeCAEReq' => 
 				[ 
 					'FeCabReq' => 
 						[  'CantReg' => $data['CantReg'],
-								'PtoVta' => $data['PtoVta'],
+								'PtoVta' => $sale_point,
 								'CbteTipo' => $data['CbteTipo'] 
 						],
 					'FeDetReq' => 
@@ -215,5 +218,25 @@ Class Biller extends WebService implements AccessTicketClient{
 	    return intval( $response->FECompUltimoAutorizadoResult->CbteNro );
 
 	}
+
+	/**
+	 * Obtiene puntos de centa autorizados
+	 * @return int 
+	 */ 
+	private function _getAthorizedSalePoint(){
+
+		$params = [ 'Auth' => $this->_getAuthParams() ];
+
+		$response = $this->soap_client->FEParamGetPtosVenta( $params );
+
+	    if( isset( $results->FECompUltimoAutorizadoResult->Errors ) ){	    	
+	    	throw new WSException("Error obteniendo ultimo número de comprobante autorizado", $this,
+	    						   WSHelper::export_response( $response ) );
+	    }
+	    
+	    return intval( $response->FEParamGetPtosVentaResult->ResultGet->PtoVenta->Nro );
+
+	}
+
 
 }
