@@ -207,7 +207,7 @@ Class Biller extends WebService implements AccessTicketClient{
 
 		$params = [ 'Auth' => $this->_getAuthParams(),
 				    'PtoVta' => $data['PtoVta'],
-				    'CbteTipo' => 2 ];
+				    'CbteTipo' => $data['CbteTipo'] ];
 
 		$response = $this->soap_client->FECompUltimoAutorizado( $params );
 
