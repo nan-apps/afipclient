@@ -5,7 +5,7 @@ use AfipServices\WSException;
 use AfipServices\WebServices\Auth;
 use AfipServices\WebServices\Biller;
 use AfipServices\Factories\SoapClientFactory;
-use AfipServices\Factories\AuthFactory;
+use AfipServices\Factories\AuthServiceFactory;
 
 
 if( !file_exists( 'conf.php' ) ){
