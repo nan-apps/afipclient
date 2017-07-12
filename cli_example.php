@@ -37,8 +37,8 @@ $biller = new Biller(
 $data = array(
     'Cuit' => '123456789',
     'CantReg' => 1,
-    'PtoVta' => 1, //null para que lo obtenga utilizando el web service
-    'CbteTipo' => 2, //B
+    'PtoVta' => $biller_conf['sale_point'], //null para que lo intente obtener el web service
+    'CbteTipo' => 06, //A:01 B:06 C:11 
     'Concepto' => 2, //servicios
     'DocTipo' => 80, //80=CUIL
     'DocNro' => '123456789',

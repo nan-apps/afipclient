@@ -12,7 +12,8 @@ return array(
     ),
     'wsfev1' => array(
         'wsdl'      => 'https://wswhomo.afip.gov.ar/wsfev1/service.asmx?wsdl',
-        'end_point' => 'https://wswhomo.afip.gov.ar/wsfev1/service.asmx'
+        'end_point' => 'https://wswhomo.afip.gov.ar/wsfev1/service.asmx',
+        'sale_point' => 1
     )
 
 );
