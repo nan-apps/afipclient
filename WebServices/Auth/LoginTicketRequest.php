@@ -2,6 +2,7 @@
 namespace AfipServices\WebServices\Auth;
 
 use AfipServices\WebServices\WebService;
+use AfipServices\Traits\FileManager;
 use AfipServices\WSException;
 use AfipServices\WSHelper;
 

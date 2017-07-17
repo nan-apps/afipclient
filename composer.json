@@ -1,0 +1,22 @@
+{
+    "name": "nan-apps/AfipServices",
+    "description": "Clases para interactuar con api de Afip",
+    "type": "library",
+    "require": {
+        
+    },
+    "require-dev": {
+        "mockery/mockery": "^0.9.9",
+        "phpunit/phpunit": "^6.2"
+    },
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": ".nan-apps",
+            "email": "gaston@nan-apps.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"AfipServices\\": ""}
+    }
+}

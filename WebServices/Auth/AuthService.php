@@ -59,7 +59,7 @@ Class AuthService extends WebService implements AccessTicketProvider{
 			$this->access_ticket_loader->load( $service, $access_ticket_data );
 
 		} else {
-			//nada, el servicio ya tiene un ticket valido para operar
+			//nada, el servicio ya tiene un ticket valido para operar			
 		}
 				
 	}

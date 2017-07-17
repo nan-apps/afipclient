@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use AfipServices\SoapClientFactory;
+use AfipServices\Factories\SoapClientFactory;
 
 class SoapClientFactoryTest extends TestCase {
 

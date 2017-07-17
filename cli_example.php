@@ -1,11 +1,12 @@
 <?php
 
-use AfipServices\AccessTicket;
 use AfipServices\WSException;
-use AfipServices\WebServices\Auth;
-use AfipServices\WebServices\Biller;
-use AfipServices\Factories\SoapClientFactory;
 use AfipServices\Factories\AuthServiceFactory;
+use AfipServices\Factories\BillerServiceFactory;
+
+if (php_sapi_name() != 'cli') {
+  throw new Exception('This application must be run on the command line.');
+}
 
 
 if( !file_exists( 'conf.php' ) ){
@@ -13,7 +14,7 @@ if( !file_exists( 'conf.php' ) ){
 	die();
 }
 
-include_once('autoload.php');
+include_once('vendor/autoload.php');
 $conf = include( 'conf.php' );
 
 
@@ -21,18 +22,18 @@ $auth_conf = $conf['wsaa'];
 $biller_conf = $conf['wsfev1'];
 
 /* Servicio de autenticacion */
-$auth = AuthFactory::create( $auth_conf['wsdl'], 
-                             $auth_conf['end_point'],
-                             $auth_conf['cert_file_name'],
-                             $auth_conf['key_file_name'],
-                             $auth_conf['passprhase']  );
+$auth = AuthServiceFactory::create( $auth_conf['wsdl'], 
+                                    $auth_conf['end_point'],
+                                    $auth_conf['cert_file_name'],
+                                    $auth_conf['key_file_name'],
+                                    $auth_conf['passprhase']  );
 
 /* Servicio de facturación */            
-$biller = new Biller( 
-    SoapClientFactory::create( $biller_conf['wsdl'], $biller_conf['end_point'] ), 
-    $auth, 
-    new AccessTicket( $conf['cuit'] ) 
-);
+$biller = BillerServiceFactory::create( $auth, 
+                                        $biller_conf['wsdl'], 
+                                        $biller_conf['end_point'], 
+                                        $conf['cuit'] );
+
 
 $data = array(
     'Cuit' => '123456789',
@@ -58,6 +59,15 @@ $data = array(
     'MonCotiz' => 1, //1 
 );
 
+
 //solicita cae y cae_validdate
-;
-var_dump( $biller->requestCAE( $data ) );
+
+try {
+
+    var_dump( $biller->requestCAE( $data ) );
+    
+} catch ( WSException $e ) {
+    var_dump( $e );
+}
+
+
