@@ -1,37 +1,37 @@
 <?php
-namespace AfipServices\WebServices;
+namespace AfipServices\WebServices\Biller;
 
 use AfipServices\WSException;
 use AfipServices\WSHelper;
 use AfipServices\AccessTicket;
 use AfipServices\AccessTicketClient;
-use AfipServices\AccessTicketManager;
+use AfipServices\AccessTicketProvider;
 use AfipServices\WebServices\WebService;
 use AfipServices\Traits\FileManager;
 
 /**
  * WebService de facturación electrónica, WSFEV1 de Afip 
  */
-Class Biller extends WebService implements AccessTicketClient{
+Class BillerService extends WebService implements AccessTicketClient{
 
 	use FileManager;
 
 	protected $service_name = 'wsfe';
 	protected $soap_client;
-	protected $access_ticket_manager;
+	protected $access_ticket_provider;
 	protected $access_ticket;
 
 	/**
 	 * @param SoapClient $soap_client SoapClientFactory::create( [wsdl], [end_point] )
-	 * @param AccessTicketManager $acces_ticket_manager el objeto encargado de procesar y completar el AccessTicket
+	 * @param AccessTicketProvider $acces_ticket_manager el objeto encargado de procesar y completar el AccessTicket
 	 * @param AccessTicket $access_ticket
 	 */ 
 	public function __construct( \SoapClient $soap_client,
-								 AccessTicketManager $access_ticket_manager, 
+								 AccessTicketProvider $access_ticket_provider, 
 								 AccessTicket $access_ticket  ){
 
 		$this->soap_client = $soap_client;
-		$this->access_ticket_manager = $access_ticket_manager;
+		$this->access_ticket_provider = $access_ticket_provider;
 		$this->access_ticket = $access_ticket;
 	}
 
@@ -52,20 +52,17 @@ Class Biller extends WebService implements AccessTicketClient{
 	}
 
 	/**
-	 * Le solicita el Ticket de Acceso al AccessTicketManager
+	 * Le solicita el Ticket de Acceso al AccessTicketProvider
 	 * @return AccessTicket
 	 */ 
 	public function getAT(){
 
-		if( !$this->access_ticket ){
-			throw new WSException("Ticket de acceso requerido para operar", $this);			
-		}
-
-		if( !$this->access_ticket->getTaxId() ){
+		if( !$this->access_ticket->getTaxId() ){			
 			throw new WSException("El Ticket de acceso al WSFE de Afip debe tener cuit", $this);			
 		}
 
-		$this->access_ticket_manager->processAccessTicket( $this );
+
+		$this->access_ticket_provider->processAccessTicket( $this );
 		return $this->access_ticket;
 	}
 
@@ -206,7 +203,7 @@ Class Biller extends WebService implements AccessTicketClient{
 
 		$params = [ 'Auth' => $this->_getAuthParams(),
 				    'PtoVta' => $data['PtoVta'],
-				    'CbteTipo' => 2 ];
+				    'CbteTipo' => $data['CbteTipo'] ];
 
 		$response = $this->soap_client->FECompUltimoAutorizado( $params );
 

@@ -1,21 +1,39 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use AfipServices\SoapClientFactory;
+use AfipServices\Factories\AuthServiceFactory;
+use \Mockery as m;
 
 class AuthServiceFactoryTest extends TestCase {
 
-	public function testCreateShouldReturnASoapClientInstance(){
+	public function tearDown(){
+ 		m::close();
+ 	}
 
-		//given this set of data
-		$test_wsdl = 'http://www.webservicex.com/globalweather.asmx?WSDL';
+	public function testCreateShouldReturnAnAuthService(){
 
 		//when i perform this action
-		$auth = AuthServiceFactory::create( $test_wsdl, '' );
+		$auth = AuthServiceFactory::create( '', 
+											'', 
+											'', 
+											'', 
+											'', 
+											m::mock('SoapClient'),
+											m::mock('AfipServices\WebServices\Auth\AccessTicketStore'),
+											m::mock('AfipServices\WebServices\Auth\AccessTicketLoader'),
+											m::mock('AfipServices\WebServices\Auth\LoginTicketRequest')
+		);
 
 		//the i expect this response
-	 	$this->assertInstanceOf( 'SoapClient', $soap_client );
+	 	$this->assertInstanceOf( 'AfipServices\WebServices\Auth\AuthService', $auth );
 
+	}
+
+	/**	 
+	 * @expectedException \ArgumentCountError
+	 */  
+	public function testCreateRequiredDependencies(){
+		AuthServiceFactory::create();
 	}
 
 }
