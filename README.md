@@ -36,22 +36,18 @@ Debe tener permisos de escritura
 
     try{
 
-		/**
-		 * Servicio de autenticación
-		 */ 
-		$auth = new Afip\Services\Auth( 
-		    Afip\SoapClientFactory::create( $auth_conf['wsdl'], $auth_conf['end_point'] ),                                 
-		    $auth_conf['passprhase'] 
-		);        
+		/* Servicio de autenticacion */
+        $auth = AuthServiceFactory::create( $auth_conf['wsdl'], 
+                                            $auth_conf['end_point'],
+                                            $auth_conf['cert_file_name'],
+                                            $auth_conf['key_file_name'],
+                                            $auth_conf['passprhase']  );
 
-		/**
-		 * Servicio de facturacion, recibe como parametro el servicio de autenticación 
-		 */
-		$biller = new Afip\Services\Biller( 
-		    Afip\SoapClientFactory::create( $biller_conf['wsdl'], $biller_conf['end_point'] ), 
-		    $auth, 
-		    new Afip\AccessTicket( $conf['cuit'] ) 
-		);
+        /* Servicio de facturación */            
+        $biller = BillerServiceFactory::create( $auth, 
+                                                $biller_conf['wsdl'], 
+                                                $biller_conf['end_point'], 
+                                                $conf['cuit'] );
 
 		/**
 		 * Solicitar cae y cae_validdate y otros datos [ string    'cae' => '',  
