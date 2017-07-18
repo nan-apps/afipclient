@@ -1,14 +1,14 @@
 <?php
 namespace AfipServices;
 
-use AfipServices\WebServices\WebService;
+use AfipServices\AccessTicketClient;
 
 interface AccessTicketProvider{
 
 	/**
 	 * @param WebService $service
 	 */ 
-	public function processAccessTicket( WebService $service );
+	public function processAccessTicket( AccessTicketClient $service );
 
 
 }
