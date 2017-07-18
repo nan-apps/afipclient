@@ -15,7 +15,7 @@ Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 ## Carpeta Temp
 Debe tener permisos de escritura
 
-## Ejemplo de uso con urls de testing/homologacion
+## Ejemplo de uso
 
 ```php
 
