@@ -37,30 +37,32 @@ Class AuthService extends WebService implements AccessTicketProvider{
 	}
 	
 	/**
-	 * @param WebService $client  el servicio cliente que quiere procesar el ticket de acceso
+	 * @param AccessTicketClient $client  el servicio cliente que quiere procesar el ticket de acceso
 	 * @param AccessTicket $access_ticket ticket de acceso a ser procesado
 	 * @throws WSException
 	 */ 
-	public function processAccessTicket( WebService $service ){
+	public function processAccessTicket( AccessTicketClient $service ){
 
-		if ( !$service instanceof AccessTicketClient ){
-        	throw new WSException( 'El servicio debe ser una instancia de AccessTicketClient', $this );
+		if ( !$service instanceof WebService ){
+        	throw new WSException( 'El servicio debe ser una instancia de WebService', $this );
 		} 
+
         //si el ticket del servicio esta vacio o vencido y no hay en storage o este tmb esta vacio o vencido => proceso
-		elseif ( $service->getAccessTicket()->isExpired() &&  
-			    !$this->access_ticket_loader->loadFromStorage( $this->access_ticket_store, $service ) ) {
-			//obtengo nuevos datos de acceso
-			$access_ticket_data = $this->_getNewAccessTicketData( $service );
+		if ( $service->getAccessTicket()->isExpired() ){
 
-			//guardo datos en disco
-			$this->access_ticket_store->saveDataToStorage( $service, $access_ticket_data );
+			if( !$this->access_ticket_loader->loadFromStorage( $this->access_ticket_store, $service ) ){
 
-			//se lo cargo al servicio cliente
-			$this->access_ticket_loader->load( $service, $access_ticket_data );
+				$access_ticket_data = $this->_getNewAccessTicketData( $service );
 
-		} else {
-			//nada, el servicio ya tiene un ticket valido para operar			
-		}
+				//guardo datos en disco
+				$this->access_ticket_store->saveDataToStorage( $service, $access_ticket_data );
+
+				//se lo cargo al servicio cliente
+				$this->access_ticket_loader->load( $service, $access_ticket_data );
+
+			}
+
+		} 
 				
 	}
 
