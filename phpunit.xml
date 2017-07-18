@@ -1,9 +1,10 @@
-<phpunit bootstrap="autoload.php"
+<phpunit bootstrap="vendor/autoload.php"
 
 	colors="true"
 	convertErrorsToExceptions="true"
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
+	beStrictAboutTestsThatDoNotTestAnything="true" 
 	stopOnFailure="true">
 
 	<testsuites>
