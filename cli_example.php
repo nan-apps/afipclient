@@ -9,9 +9,8 @@ if (php_sapi_name() != 'cli') {
 }
 
 
-if( !file_exists( 'conf.php' ) ){
-	echo "Copia el contenido de conf.example.php a conf.php y completa los datos correctamente\n";
-	die();
+if( !file_exists( 'conf.php' ) ){	
+    throw new Exception("Copia el contenido de conf.example.php a conf.php y completa los datos correctamente\n");	
 }
 
 require_once('vendor/autoload.php');
