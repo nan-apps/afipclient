@@ -4,6 +4,7 @@ namespace AfipServices\WebServices\Auth;
 use AfipServices\WebServices\Auth\AccessTicketLoader;
 use AfipServices\WebServices\Auth\AccessTicketStore;
 use AfipServices\WebServices\Auth\LoginTicketRequest;
+use AfipServices\WebServices\Auth\LoginTicketResponse;
 use AfipServices\WebServices\WebService;
 use AfipServices\AccessTicketProvider;
 use AfipServices\AccessTicketClient;
@@ -27,12 +28,14 @@ Class AuthService extends WebService implements AccessTicketProvider{
 	public function __construct( \SoapClient $soap_client, 
 		                          AccessTicketStore $access_ticket_store, 		 
 		                          AccessTicketLoader $access_ticket_loader, 		 
-		                          LoginTicketRequest $login_ticket_request){
+		                          LoginTicketRequest $login_ticket_request, 
+		                          LoginTicketResponse $login_ticket_response){
 
 		$this->soap_client = $soap_client;	
 		$this->access_ticket_store = $access_ticket_store;
 		$this->access_ticket_loader = $access_ticket_loader;
 		$this->login_ticket_request = $login_ticket_request;		
+		$this->login_ticket_response = $login_ticket_response;		
 
 	}
 	
@@ -73,16 +76,11 @@ Class AuthService extends WebService implements AccessTicketProvider{
 	 */ 
 	private function _getNewAccessTicketData( WebService $service ){
 
-		//obtengo el cms para requerimiento de acceso
-		$ltr_cms = $this->login_ticket_request->getRequestDataCms( $service );
-
 		//envio el cms al WS 
-		$login_ticket_response = $this->_sendCms( $ltr_cms );
+		$this->_sendCms( $service );
 
 		//Extraigo de la respuesta el xml con los datos de acceso
-		$access_ticket_data = $login_ticket_response->loginCmsReturn;
-
-		return $access_ticket_data;
+		return $this->login_ticket_response->getAccessTicketData();
 
 	}
 
@@ -91,11 +89,18 @@ Class AuthService extends WebService implements AccessTicketProvider{
 	/**
 	 * invoco el método LoginCMS del WSAA
 	 * @param $login_ticket_request_cms (cryptographic message syntax)
-	 * @return stdClass
+	 * @return LoginTicketResponse
 	 */ 
-	private function _sendCms( $login_ticket_request_cms ){
+	private function _sendCms( $service ){
 
-		return $this->soap_client->loginCms( [ 'in0' => $login_ticket_request_cms ] );
+		//obtengo el cms para requerimiento de acceso
+		$ltr_cms = $this->login_ticket_request->getRequestDataCms( $service );
+
+		$response = $this->soap_client->loginCms( [ 'in0' => $ltr_cms ] );
+
+		$this->login_ticket_response->setResponse( $response );
+
+
 
 	}
 

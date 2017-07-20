@@ -61,8 +61,8 @@ Class BillerService extends WebService implements AccessTicketClient{
 			throw new WSException("El Ticket de acceso al WSFE de Afip debe tener cuit", $this);			
 		}
 
-
 		$this->access_ticket_provider->processAccessTicket( $this );
+		
 		return $this->access_ticket;
 	}
 
@@ -93,13 +93,14 @@ Class BillerService extends WebService implements AccessTicketClient{
 	 */ 
 	private function _validateAndParseResponse( \stdClass $response ){
 
-		$cae = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE;
-
-		if( isset( $response->FECAESolicitarResult->Errors ) || !$cae ){
+		if( isset( $response->FECAESolicitarResult->Errors ) || 
+			!isset( $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE )			
+			){
 			throw new WSException( "Error obteniendo CAE", $this,	 
 	    						   WSHelper::export_response( $response ) );
-		}
+		} 
 
+		$cae = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE;
 		$cae_validdate = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAEFchVto;
 		$invoice_number = (int) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CbteDesde;
 		$tax_id = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->DocNro;

@@ -20,7 +20,8 @@ class AuthServiceTest extends TestCase {
 			m::mock('SoapClient'),
 			m::mock('AfipServices\WebServices\Auth\AccessTicketStore'),
 			m::mock('AfipServices\WebServices\Auth\AccessTicketLoader'),
-			m::mock('AfipServices\WebServices\Auth\LoginTicketRequest')
+			m::mock('AfipServices\WebServices\Auth\LoginTicketRequest'),
+			m::mock('AfipServices\WebServices\Auth\LoginTicketResponse')
 		);
 
  	}
@@ -77,10 +78,38 @@ class AuthServiceTest extends TestCase {
 			m::mock('SoapClient'),
 			m::mock('AfipServices\WebServices\Auth\AccessTicketStore'),
 			$atl_mock,
-			m::mock('AfipServices\WebServices\Auth\LoginTicketRequest')
+			m::mock('AfipServices\WebServices\Auth\LoginTicketRequest'),
+			m::mock('AfipServices\WebServices\Auth\LoginTicketResponse')
 		);
 
 		$auth->processAccessTicket( $b_mock );
+
+	}
+
+	public function testShouldLookTicketInStorageIfExpired(){
+
+		$biller_mock = m::mock('AfipServices\WebServices\Biller\BillerService');
+		$biller_mock->shouldReceive([
+			'getAccessTicket->isExpired' => true	
+		])->once();
+
+		$at_store_mock = m::mock('AfipServices\WebServices\Auth\AccessTicketStore');
+
+		$at_loader_mock = m::mock('AfipServices\WebServices\Auth\AccessTicketLoader');
+		$at_loader_mock->shouldReceive('loadFromStorage')
+				 ->once()
+				 ->with( $at_store_mock, $biller_mock )
+				 ->andReturn( true );
+
+		$auth = new AuthService(
+			m::mock('SoapClient'),
+			$at_store_mock,
+			$at_loader_mock,
+			m::mock('AfipServices\WebServices\Auth\LoginTicketRequest'),
+			m::mock('AfipServices\WebServices\Auth\LoginTicketResponse')
+		);
+
+		$auth->processAccessTicket( $biller_mock );
 
 	}
 
