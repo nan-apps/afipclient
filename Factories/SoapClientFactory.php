@@ -1,7 +1,10 @@
 <?php
 namespace AfipServices\Factories;
+use AfipServices\Traits\FileManager;
 
 Class SoapClientFactory{
+
+	use FileManager;
 
 	/**
 	 * Crea un cliente soap
@@ -10,7 +13,7 @@ Class SoapClientFactory{
 	 * @return SoapClient
 	 */ 
 	public static function create( $wsdl, $end_point ){
-
+		
 		return new \SoapClient( $wsdl, 
                 [
                     'soap_version'   => SOAP_1_2,

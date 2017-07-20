@@ -68,7 +68,7 @@ try {
     var_dump( $biller->requestCAE( $data ) );
     
 } catch ( WSException $e ) {
-    var_dump( $e );
+    var_dump( $e->getWSResponse() );
 }
 
 
