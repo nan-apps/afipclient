@@ -16,7 +16,7 @@ trait FileManager {
      * @throws WSException
      */ 
 	protected function getTempFolderPath( $file_name = null, $file_check = false ){
-    	
+    	//
     	$path = $this->temp_folder_path;
 
     	if( $file_name ){
