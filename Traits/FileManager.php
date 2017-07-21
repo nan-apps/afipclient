@@ -6,7 +6,7 @@ use AfipServices\WSException;
 trait FileManager {
 
 	private $temp_folder_path = __DIR__ . "/../Temp/";    
-	private $resources_folder_path = __DIR__ . "/../Resources/";
+	private $resources_folder_path = '';
 
     /**
      * Devuelve la ruta a la carpeta de archivos temporales o al archivo temporal ingresado
@@ -16,7 +16,7 @@ trait FileManager {
      * @throws WSException
      */ 
 	protected function getTempFolderPath( $file_name = null, $file_check = false ){
-    	//
+
     	$path = $this->temp_folder_path;
 
     	if( $file_name ){

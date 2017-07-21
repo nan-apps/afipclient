@@ -96,6 +96,7 @@ Class BillerService extends WebService implements AccessTicketClient{
 		$cae = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE;
 
 		if( isset( $response->FECAESolicitarResult->Errors ) || !$cae ){
+		  die(debug($response));
 			throw new WSException( "Error obteniendo CAE", $this,	 
 	    						   WSHelper::export_response( $response ) );
 		}
