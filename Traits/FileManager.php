@@ -5,7 +5,7 @@ use AfipServices\WSException;
 
 trait FileManager {
 
-	private $temp_folder_path = __DIR__ . "/../Temp/";    
+	private $temp_folder_path = TMP;
 	private $resources_folder_path = '';
 
     /**

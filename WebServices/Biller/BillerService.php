@@ -96,8 +96,7 @@ Class BillerService extends WebService implements AccessTicketClient{
 		$cae = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE;
 
 		if( isset( $response->FECAESolicitarResult->Errors ) || !$cae ){
-		  die(debug($response));
-			throw new WSException( "Error obteniendo CAE", $this,	 
+			throw new WSException( "Error obteniendo CAE", $this,
 	    						   WSHelper::export_response( $response ) );
 		}
 
@@ -105,8 +104,7 @@ Class BillerService extends WebService implements AccessTicketClient{
 		$invoice_number = (int) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CbteDesde;
 		$tax_id = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->DocNro;
 		$invoice_date = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CbteFch;
-
-		return [ 
+		return [
 			'cae' => $cae, 
 			'cae_validdate' => date_create_from_format( 'Ymd', $cae_validdate ),
 			'invoice_number' => $invoice_number,
