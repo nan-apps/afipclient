@@ -5,6 +5,7 @@ abstract class WebService{
 
 	private $service_name;
 	private $soap_client;
+	private $unique_id;
 
 	/**
 	 * Devuelve el nombre del servicio
@@ -21,5 +22,13 @@ abstract class WebService{
 	public function getSoapClient(){
 		return $this->soap_client;
 	}
+
+	public function setUniqueID(string $id) {
+	  $this->unique_id = $id;
+  }
+
+  public function getUniqueID() {
+	  return $this->unique_id;
+  }
 
 }
