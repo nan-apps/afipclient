@@ -1,32 +1,28 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use AfipServices\Factories\AuthServiceFactory;
+use AfipClient\Factories\AuthClientFactory;
 use \Mockery as m;
 
-class AuthServiceFactoryTest extends TestCase {
+class AuthClientFactoryTest extends TestCase {
 
 	public function tearDown(){
  		m::close();
  	}
 
-	public function testCreateShouldReturnAnAuthService(){
+	public function testCreateShouldReturnAnAuthClient(){
 
 		//when i perform this action
-		$auth = AuthServiceFactory::create( 
-			'', 
-			'', 
-			'', 
-			'', 
-			'', 
+		$auth = AuthClientFactory::create( 
+			[],
 			m::mock('SoapClient'),
-			m::mock('AfipServices\WebServices\Auth\AccessTicketStore'),
-			m::mock('AfipServices\WebServices\Auth\AccessTicketLoader'),
-			m::mock('AfipServices\WebServices\Auth\LoginTicketRequest')
+			m::mock('AfipClient\Clients\Auth\AccessTicketStore'),
+			m::mock('AfipClient\Clients\Auth\AccessTicketLoader'),
+			m::mock('AfipClient\Clients\Auth\LoginTicketRequest')
 		);
 
 		//the i expect this response
-	 	$this->assertInstanceOf( 'AfipServices\WebServices\Auth\AuthService', $auth );
+	 	$this->assertInstanceOf( 'AfipClient\Clients\Auth\AuthClient', $auth );
 
 	}
 
@@ -34,7 +30,7 @@ class AuthServiceFactoryTest extends TestCase {
 	 * @expectedException \ArgumentCountError
 	 */  
 	public function testCreateRequiredDependencies(){
-		AuthServiceFactory::create();
+		AuthClientFactory::create();
 	}
 
 }

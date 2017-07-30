@@ -1,8 +1,8 @@
 <?php
-namespace AfipServices\WebServices\Auth;
+namespace AfipClient\Clients\Auth;
 
-use AfipServices\WebServices\WebService;
-use AfipServices\Traits\FileManager;
+use AfipClient\Clients\Client;
+use AfipClient\Traits\FileManager;
 
 /**
  * Clase encargada guardar y obtener datos de access ticket en disco
@@ -13,12 +13,12 @@ class AccessTicketStore{
 
 
 	/**
-	 * Si en disco hay datos para ticket de acceso, los levanta y se los carga al servicio
-	 * @param Service $service el servicio, el cual posee el access ticket a cargar
+	 * Si en disco hay datos para ticket de acceso, los levanta y se los carga al cliente
+	 * @param Client $client el cliente, el cual posee el access ticket a cargar
 	 */ 
-	public function getDataFromStorage( WebService $service ){
+	public function getDataFromStorage( Client $client ){
 
-		$file = $this->getTempFilePath( "TA_{$service->getServiceName()}.xml");		
+		$file = $this->getTempFilePath( "TA_{$client->getClientName()}.xml");		
 		$access_ticket_data = "";
 
 		if( file_exists( $file ) ){
@@ -34,9 +34,9 @@ class AccessTicketStore{
 	 * @param $access_ticket_data xml con datos de acceso devuelto por el ws	 
 	 * @throws WSException
 	 */ 
-	public function saveDataToStorage( WebService $service, $access_ticket_data ){
+	public function saveDataToStorage( Client $client, $access_ticket_data ){
 
-		$path = $this->getTempFilePath( "TA_{$service->getServiceName()}.xml" );
+		$path = $this->getTempFilePath( "TA_{$client->getClientName()}.xml" );
 
 		$rsp = file_put_contents( $path, $access_ticket_data );
 

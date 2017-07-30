@@ -1,5 +1,5 @@
 {
-    "name": "nan-apps/AfipServices",
+    "name": "nan-apps/AfipClient",
     "description": "Clases para interactuar con api de Afip",
     "type": "library",
     "require": {
@@ -17,6 +17,6 @@
         }
     ],
     "autoload": {
-        "psr-4": {"AfipServices\\": ""}
+        "psr-4": {"AfipClient\\": ""}
     }
 }

@@ -1,7 +1,7 @@
 <?php
-namespace AfipServices\Traits;
+namespace AfipClient\Traits;
 
-use AfipServices\WSException;
+use AfipClient\WSException;
 
 trait FileManager {
 
@@ -81,6 +81,20 @@ trait FileManager {
         if( !is_writable( $this->getTempFolderPath() ) ){
             throw new WSException("La carpeta Temp debe tener permisos de escritura");            
         };        
+    }
+
+    /**
+     * Si el archivo no exite lanza excepcion
+     * @param string $file_path
+     * @param string $file_name
+     * @throws WSException
+     */ 
+    protected function validateFile( $file_path, $file_name ){
+        if( !file_exists( $file_path ) ){         
+            throw new WSException("{$file_name} inexistente en {$file_path}");                    
+        } else {
+            return $file_path;
+        }
     }
 
 }

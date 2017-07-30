@@ -1,17 +1,17 @@
 <?php
-namespace AfipServices\WebServices;
+namespace AfipClient\Clients;
 
-abstract class WebService{
+abstract class Client{
 
-	private $service_name;
+	private $client_name;
 	private $soap_client;
 
 	/**
-	 * Devuelve el nombre del servicio
+	 * Devuelve el nombre del cliente
 	 * @return string
 	 */ 
-	public function getServiceName(){
-		return $this->service_name;
+	public function getClientName(){
+		return $this->client_name;
 	}
 
 	/**
