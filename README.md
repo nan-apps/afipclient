@@ -21,28 +21,13 @@ Debe tener permisos de escritura
 
 
 require_once('vendor/autoload.php');
-$conf = include( 'conf.php' );
-
-
-$auth_conf = $conf['wsaa'];
-$biller_conf = $conf['wsfev1'];
-
 
 try {
 
-    /* Servicio de autenticacion */
-    $auth = AuthServiceFactory::create( $auth_conf['wsdl'], 
-                                        $auth_conf['end_point'],
-                                        $auth_conf['cert_file_name'],
-                                        $auth_conf['key_file_name'],
-                                        $auth_conf['passprhase']  );
+    $conf = include( 'conf.php' );
 
     /* Servicio de facturación */            
-    $biller = BillerServiceFactory::create( $auth, 
-                                            $biller_conf['wsdl'], 
-                                        $biller_conf['end_point'], 
-                                        $conf['cuit'] );
-
+    $biller = BillerFactory::create( $conf );
 
     $data = array(
         'Cuit' => '123456789',
