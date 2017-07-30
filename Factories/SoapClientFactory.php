@@ -1,6 +1,6 @@
 <?php
-namespace AfipServices\Factories;
-use AfipServices\Traits\FileManager;
+namespace AfipClient\Factories;
+use AfipClient\Traits\FileManager;
 
 Class SoapClientFactory{
 

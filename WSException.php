@@ -1,11 +1,11 @@
 <?php
-namespace AfipServices;
+namespace AfipClient;
 
-use AfipServices\WebServices\WebService;
+use AfipClient\Clients\Client;
 
 class WSException extends \Exception {
     
-    protected $service;	
+    protected $client;	
 	protected $ws_response;
 
 	/**
@@ -13,12 +13,12 @@ class WSException extends \Exception {
 	 * @param string $ws_response
 	 * @param int $code
 	 */ 
-    function __construct( $message = '', WebService $service = null, $ws_response = '', $code = 0  ) {
+    function __construct( $message = '', Client $client = null, $ws_response = '', $code = 0  ) {
 
         parent::__construct( $message, $code );
 
         $this->ws_response = $ws_response;
-        $this->service = $service;
+        $this->client = $client;
     }
 
     /**
@@ -29,10 +29,10 @@ class WSException extends \Exception {
     }
 
     /**
-     * @return WebService
+     * @return Client
      */
-    public function getService(){
-    	return $this->service;
+    public function getClient(){
+    	return $this->client;
     }
 
 }

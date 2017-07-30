@@ -1,5 +1,5 @@
 <?php
-namespace AfipServices;
+namespace AfipClient;
 
 class WSHelper{
 
@@ -18,6 +18,5 @@ class WSHelper{
     public static function unlink_files( Array $files ){
         array_map('unlink', $files );
     }
-
 
 }

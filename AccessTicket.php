@@ -1,5 +1,5 @@
 <?php
-namespace AfipServices;
+namespace AfipClient;
 
 /**
  * Ticket de acceso

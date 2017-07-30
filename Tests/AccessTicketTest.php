@@ -1,6 +1,6 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use AfipServices\AccessTicket;
+use AfipClient\AccessTicket;
 
 class AccessTicketTest extends TestCase {
 
@@ -8,7 +8,7 @@ class AccessTicketTest extends TestCase {
 
 	 	$at = new AccessTicket();
 
-	 	$this->assertInstanceOf( 'AfipServices\AccessTicket', $at );
+	 	$this->assertInstanceOf( 'AfipClient\AccessTicket', $at );
 
 	}
 

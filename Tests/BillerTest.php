@@ -1,9 +1,10 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-use AfipServices\WebServices\Biller\BillerService;
-use AfipServices\AccessTicketManager;
-use AfipServices\AccessTicket;
+use AfipClient\Clients\Biller\Biller;
+use AfipClient\AccessTicketManager;
+use AfipClient\AccessTicket;
+
 use \Mockery as m;
 
 class BillerTest extends TestCase {
@@ -16,17 +17,15 @@ class BillerTest extends TestCase {
 
  	public function setUp(){
 
- 		$this->biller = new BillerService(
-			m::mock('SoapClient'),
-			m::mock('AfipServices\AccessTicketProvider'),
-			m::mock('AfipServices\AccessTicket')
+ 		$this->biller = new Biller(
+			m::mock('AfipClient\Clients\Biller\BillerClient')
 		);
 
  	}
 	
 	public function testInstance(){
 
-	 	$this->assertInstanceOf( 'AfipServices\WebServices\Biller\BillerService', $this->biller );
+	 	$this->assertInstanceOf( 'AfipClient\Clients\Biller\Biller', $this->biller );
 
 	}
 
@@ -34,57 +33,25 @@ class BillerTest extends TestCase {
 	 * @expectedException \ArgumentCountError
 	 */  	
 	public function testInstanceWithNoArguments(){
-		new BillerService();
+		new Biller();
 	}	
 
-	public function testShouldBeAccessTicketClient(){
 
+	public function testRequesetCAE(){
 
-	 	$this->assertInstanceOf( 'AfipServices\AccessTicketClient', $this->biller );
+		$data = ['data' => ''];
+		$client_mock = m::mock('AfipClient\Clients\Biller\BillerClient');
+		$client_mock->shouldReceive('requestCAE')
+					->with( $data )
+					->once()
+					->andReturn( ['cae' => 123] );
+
+		$biller = new Biller( $client_mock );
+
+		$this->assertEquals( $biller->requestCAE( $data ), ['cae' => '123'] );
 
 	}
 
-	/**	 
-	 * @expectedException AfipServices\WSException
-	 */  
-	public function testAccessTicketShouldHaveTaxId(){
-
-		$at_mock = m::mock('AfipServices\AccessTicket');
-		$at_mock->shouldReceive('getTaxId')
-			    ->once()
-			    ->andReturn( null );
-
-		$biller = new BillerService(
-			m::mock('SoapClient'),
-			m::mock('AfipServices\AccessTicketProvider'),
-			$at_mock
-		);
-
-		$biller->getAT();
-	}
-
-	 
-	public function testShouldReturnAccessTicket(){
-
-		$ws_mock = m::mock('AfipServices\WebServices\WebService');
-
-		$at_mock = m::mock('AfipServices\AccessTicket');
-		$at_mock->shouldReceive('getTaxId')
-			    ->once()
-			    ->andReturn( '12345678' );
-
-		$atp_mock = m::mock('AfipServices\AccessTicketProvider');
-		$atp_mock->shouldReceive('processAccessTicket')
-			     ->once();
-
-		$biller = new BillerService(
-			m::mock('SoapClient'),
-			$atp_mock,
-			$at_mock
-		);
-
-		$this->assertInstanceOf( 'AfipServices\AccessTicket', $biller->getAT() );
-	}
 
 	
 

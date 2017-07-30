@@ -1,10 +1,10 @@
 <?php
-namespace AfipServices\WebServices\Auth;
+namespace AfipClient\Clients\Auth;
 
-use AfipServices\WebServices\WebService;
-use AfipServices\Traits\FileManager;
-use AfipServices\WSException;
-use AfipServices\WSHelper;
+use AfipClient\Clients\Client;
+use AfipClient\Traits\FileManager;
+use AfipClient\WSException;
+use AfipClient\WSHelper;
 
 
 /**
@@ -15,33 +15,34 @@ class LoginTicketRequest{
 	use FileManager;
 
 	private $passphrase;
-	private $cert_file_name;
-	private $key_file_name;
+	private $cert_path;
+	private $key_path;
 
 	/**
 	 * @param SoapClient $soap_client SoapClientFactory::create( [wsdl], [end_point] )
 	 * @param string $passphrase contraseña para firmar el ticket de requerimiento de acceso.
 	 */ 
-	public function __construct( $cert_file_name, $key_file_name, $passphrase = '' ){
+	public function __construct( $cert_path, $key_path, $passphrase = '' ){
 
-		$this->cert_file_name = $cert_file_name;
-		$this->key_file_name = $key_file_name;
+		$this->cert_path = $cert_path;
+		$this->key_path = $key_path;
 		$this->passphrase = $passphrase;
 
 	}
 	
 	/**
 	 * Obtiene ticket de requerimiento de acceso firmado. 
-	 * Asi obtiene los datos para rellenar el ticket de acceso  enviado por el servicio cliente.
-	 * @param $service_name nombre del servicio que requiere el acceso
+	 * Asi obtiene los datos para rellenar el ticket de acceso  enviado por el cliente cliente.
+	 * @param $client_name nombre del cliente que requiere el acceso
 	 * @param AccessTicket $access_ticket ticket a ser procesado
+	 * @return string $ltr_cms Cryptographic Message Syntax
 	 */
-	public function getRequestDataCms( WebService $service ){
+	public function getRequestDataCms( Client $client ){
 
-		$service_name = $service->getServiceName();
+		$client_name = $client->getClientName();
 
 		return $this->_signLoginTicketRequest( 
-			$this->_createLoginTicketRequest( $service_name )
+			$this->_createLoginTicketRequest( $client_name )
 		);
 
 	}
@@ -49,11 +50,11 @@ class LoginTicketRequest{
 
 	/**
 	 * Generar Ticket de requerimiento de Acceso para un ws ( Login Ticket Request )
-	 * @param $service_name Servicio al cual se quiere acceder
+	 * @param $client_name Servicio al cual se quiere acceder
 	 * @return string
 	 * @throws WSException
 	 */
-	private function _createLoginTicketRequest( $service_name ){
+	private function _createLoginTicketRequest( $client_name ){
 
 		$ltr = new \SimpleXMLElement(
 		'<?xml version="1.0" encoding="UTF-8"?>' .
@@ -64,7 +65,7 @@ class LoginTicketRequest{
 		$ltr->header->addChild('generationTime',date('c',date('U')-60));
 		$ltr->header->addChild('expirationTime',date('c',date('U')+60));
 
-		$ltr->addChild('service', $service_name );
+		$ltr->addChild('client', $client_name );
 
 		$ltr_path = $this->getTempFilePath( 'LoginTicketRequest.xml' );
 
@@ -90,8 +91,8 @@ class LoginTicketRequest{
 	        
 	        $ltr_cms_file = tempnam( $this->getTempFolderPath(), "LoginTicketRequest.xml.cms");
 
-	        $cert = file_get_contents( $this->getResourcesFilePath( $this->cert_file_name, true) );
-	        $key = file_get_contents( $this->getResourcesFilePath( $this->key_file_name, true) );
+	        $cert = file_get_contents( $this->validateFile( $this->cert_path, 'Certificado obtenido de afip' ) );
+	        $key = file_get_contents( $this->validateFile( $this->key_path, 'Clave que se uso para firmar el pedido de certificado' ) );
 
 	        $rc = openssl_pkcs7_sign(
 	            $ltr_file,
