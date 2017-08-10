@@ -29,10 +29,11 @@ try {
     /* Servicio de facturación */            
     $biller = BillerFactory::create( $conf );
 
+
     $data = array(
         'Cuit' => '123456789',
         'CantReg' => 1,
-        'PtoVta' => $biller_conf['sale_point'], //null para que lo intente obtener el web service
+        'PtoVta' => $conf['biller_sale_point'], //null para que lo intente obtener el web service
         'CbteTipo' => 06, //A:01 B:06 C:11 
         'Concepto' => 2, //servicios
         'DocTipo' => 80, //80=CUIL
@@ -55,16 +56,12 @@ try {
 
 
     //solicita cae y cae_validdate
-    
-    $data = $biller->requestCAE( $params );
+
+    var_dump( $biller->requestCAE( $data ) );
     
 } catch ( ACException $e ) {
-     var_dump([
-        'description' => "{$e->getService()->getServiceName()}: {$e->getMessage()}",
-        'log_api_response' => $e->getWSResponse()
-    ]);
+    var_dump( $e->getMessage() );
 }
-
 
 
 
