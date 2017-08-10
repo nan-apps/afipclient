@@ -29,7 +29,7 @@ Class BillerService extends WebService implements AccessTicketClient{
 	public function __construct( \SoapClient $soap_client,
 								 AccessTicketProvider $access_ticket_provider, 
 								 AccessTicket $access_ticket  ){
-
+    parent::__construct();
 		$this->soap_client = $soap_client;
 		$this->access_ticket_provider = $access_ticket_provider;
 		$this->access_ticket = $access_ticket;
