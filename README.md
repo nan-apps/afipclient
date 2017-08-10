@@ -1,16 +1,25 @@
 # Clases para interactuar con servicios afip
 
-1. `Auth` permite interactuar con el web service de autenticacion WSAA
-2. `Biller` permite interactuar con el servicio de facturacion electronica WSFEV1
+`Biller` permite interactuar con el servicio de facturacion electronica WSFEV1
 
-## Carpeta Resources
+## Configuracion
 
-En carpeta Resources debe haber: 
+```php
+return array(
 
-1. `cert.pem` este .pem nos lo da la afip.
-2. `cert.key` es la llave con el cual generamos nuestro CSR. El CSR es lo que le enviamos a la afip para obtener el `.pem`
+    'tax_id'             => 'xxxxxxxxxx', //cuit de la empresa emisora
+    'auth_passprhase'    => 'xxxxxxxxxx', //pass para firmar el certificado a enviar. Opcional
+    'auth_wsdl'          => 'https://wsaahomo.afip.gov.ar/ws/services/LoginCms?wsdl', //si es local pasar ruta absoluta
+    'auth_end_point'     => 'https://wsaahomo.afip.gov.ar/ws/services/LoginCms',
+    'auth_cert_path'     =>  __DIR__ . '/Resources/cert.pem', //certificado que la lib firma para enviar a api afip y autenticar
+    'auth_key_path'      =>  __DIR__ . '/Resources/cert.key', //clave con la que se genero el certificado en pagina de afip   
+    'biller_wsdl'        =>  __DIR__ . "/Resources/wsfev1_wsdl.xml", //ejemplo de ruta absoluta a wsdl  
+    'biller_end_point'   => 'https://wswhomo.afip.gov.ar/wsfev1/service.asmx',
+    'biller_sale_point'  => 1 //si no se le pasa, el biller intentara obtenerlo desde la api de afip
 
-Mas info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
+);
+```
+Para generacion de certificados para operar info aca -> http://www.afip.gob.ar/ws/WSASS/WSASS_manual.pdf
 
 ## Carpeta Temp
 Debe tener permisos de escritura
