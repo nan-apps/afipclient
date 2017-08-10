@@ -24,7 +24,7 @@ Para generacion de certificados para operar info aca -> http://www.afip.gob.ar/w
 ## Carpeta Temp
 Debe tener permisos de escritura
 
-## Ejemplo de uso
+## Ejemplo de uso para factura B
 
 ```php
 
@@ -93,3 +93,9 @@ try {
 1. Auth: http://www.afip.gob.ar/ws/WSAA/Especificacion_Tecnica_WSAA_1.2.2.pdf
 
 2. F.E.: http://www.afip.gob.ar/fe/documentos/manual_desarrollador_COMPG_v2_9.pdf
+
+----------------------------------------------------------------------------
+
+## TODO
+
+1. Probar y ajustar para facturas tipo A. 
