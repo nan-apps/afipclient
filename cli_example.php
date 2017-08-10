@@ -50,16 +50,7 @@ try {
     //solicita cae y cae_validdate
 
     var_dump( $biller->requestCAE( $data ) );
-
-    /* >> [ 
-            'cae' => '', 
-            'cae_validdate' => '',
-            'invoice_number' => '',
-            'sale_point' => '',
-            'invoice_date' => '',
-            'tax_id' => '',
-            'full_response' => '',
-        ]; */ 
+    
     
 } catch ( ACException $e ) {
     var_dump( $e->getMessage() );
