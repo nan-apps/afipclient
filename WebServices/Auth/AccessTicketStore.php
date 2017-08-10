@@ -18,7 +18,7 @@ class AccessTicketStore{
 	 */ 
 	public function getDataFromStorage( WebService $service ){
 
-		$file = $this->getTempFilePath( "TA_{$service->getServiceName()}.xml");		
+		$file = $this->getTempFilePath( "TA_{$service->getServiceName()}_{$service->getUniqueID()}.xml");
 		$access_ticket_data = "";
 
 		if( file_exists( $file ) ){
@@ -36,7 +36,7 @@ class AccessTicketStore{
 	 */ 
 	public function saveDataToStorage( WebService $service, $access_ticket_data ){
 
-		$path = $this->getTempFilePath( "TA_{$service->getServiceName()}.xml" );
+		$path = $this->getTempFilePath( "TA_{$service->getServiceName()}_{$service->getUniqueID()}.xml" );
 
 		$rsp = file_put_contents( $path, $access_ticket_data );
 
