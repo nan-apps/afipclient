@@ -101,8 +101,8 @@ class LoginTicketRequestSignerTest extends TestCase {
 				->with( ['ltr_file', 'ltr_cms_file'] )
 				->once();
 
-		$om_mock->shouldReceive(['stripMIMEHeader' => 'ltr_cms'])
-				->with( 'ltr_cms_file' )
+		$om_mock->shouldReceive(['stripMIMEHeader' => 'ltr_cms_striped'])
+				->with( 'ltr_cms' )
 				->once();							
 
  		$signer = new LoginTicketRequestSigner( $fm_mock, 
@@ -111,7 +111,7 @@ class LoginTicketRequestSignerTest extends TestCase {
 										 	 'key_path', 
 										 	 'passphrase' );
 
- 		$this->assertEquals( $signer->sign( 'ltr_file' ), 'ltr_cms' );
+ 		$this->assertEquals( $signer->sign( 'ltr_file' ), 'ltr_cms_striped' );
 
  	}
 
