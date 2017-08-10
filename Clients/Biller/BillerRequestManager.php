@@ -1,7 +1,8 @@
 <?php
 namespace AfipClient\Clients\Biller;
 
-use AfipClient\WSException;
+use AfipClient\ACException;
+use AfipClient\Clients\Biller\BillerClient;
 
 /**
  * Clase encargada de manejar la consulta a enviar a al api 
@@ -10,29 +11,24 @@ Class BillerRequestManager {
 
 	/**
 	 * Armar el array para ser enviado al cliente y solicitar el cae
+	 * @param BillerClient $biller_client
 	 * @param array $data
+	 * @param array $auth_params
 	 * @return array $params
 	 */ 
-	public function buildCAEParams( $auth_params, $data ){
+	public function buildCAEParams( BillerClient $biller_client, $auth_params, $data ){
 
-		return [];
-
-		/*
-
-			private function _buildRequestCAEParams( Array $data = [] ){
-
-		if( !$data['CbteDesde'] ){
-			$last_invoice_number = $this->_getLastAuthorizedDoc( $data );
+		if( empty( $data['CbteDesde'] ) ){
+			$last_invoice_number = $biller_client->getLastAuthorizedDoc( $data );
 			$invoice_number = $last_invoice_number + 1;			
 		} else {
 			$invoice_number = $data['CbteDesde'];
 		}
 
-		$sale_point = $data['PtoVta'] ? $data['PtoVta'] : $this->_getAthorizedSalePoint();
-		
+		$sale_point = !empty($data['PtoVta']) ? $data['PtoVta'] : $biller_client->getAthorizedSalePoint();		
 
 		$params = [ 
-		 	'Auth' => $this->_getAuthParams( $data ),
+		 	'Auth' => $auth_params,
 			'FeCAEReq' => 
 				[ 
 					'FeCabReq' => 
@@ -42,7 +38,7 @@ Class BillerRequestManager {
 						],
 					'FeDetReq' => 
 						[ 'FECAEDetRequest' => 
-							[  'Concepto' => $data['Concepto'],
+							[  		'Concepto' => $data['Concepto'],
 									'DocTipo' => $data['DocTipo'],
 									'DocNro' => $data['DocNro'],
 									'CbteDesde' => $invoice_number,
@@ -77,9 +73,34 @@ Class BillerRequestManager {
 		}
 
 		return $params;
+	
+
+	
+
 	}
 
-		*/
+	/**
+	 * Armar el array para ser enviado al cliente y solicitar ultimo numero autorizado
+	 * @param array $data
+	 * @param array $auth_params
+	 * @return array $params
+	 */ 
+	public function buildLastAuthorizedDocParams( $auth_params, $data ){
+
+		return [ 'Auth' => $auth_params,
+				 'PtoVta' => $data['PtoVta'],
+				 'CbteTipo' => $data['CbteTipo'] ];
+
+	}
+
+	/**
+	 * Armar el array para ser enviado al cliente y solicitar pto venta habilitado
+	 * @param array $auth_params
+	 * @return array $params
+	 */ 
+	public function buildAthorizedSalePointParams( $auth_params ){
+
+		return [ 'Auth' => $auth_params ];
 
 	}
 	

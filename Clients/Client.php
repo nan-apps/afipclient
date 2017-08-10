@@ -3,8 +3,8 @@ namespace AfipClient\Clients;
 
 abstract class Client{
 
-	private $client_name;
-	private $soap_client;
+	protected $client_name;
+	protected $soap_client;
 
 	/**
 	 * Devuelve el nombre del cliente

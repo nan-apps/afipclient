@@ -2,15 +2,16 @@
 namespace AfipClient\Clients\Auth;
 
 use AfipClient\Clients\Client;
+use AfipClient\ACHelper;
+use AfipClient\ACException;
 
 /**
  * Client de Autenticación y Autorización, encargado de interactuar con api
  */
 Class AuthClient extends Client{
 
-	private $client_name = 'wsaa';
-	private $soap_client;
-	
+	protected $client_name = 'wsaa';
+	protected $soap_client;	
 
 	/**
 	 * @param SoapClient $soap_client SoapClientFactory::create( [wsdl], [end_point] )
@@ -29,7 +30,14 @@ Class AuthClient extends Client{
 	 */ 
 	public function sendCms( $login_ticket_request_cms ){
 
-		return $this->soap_client->loginCms( [ 'in0' => $login_ticket_request_cms ] );
+		try {
+
+			return $this->soap_client->loginCms( [ 'in0' => $login_ticket_request_cms ] );			
+
+		} catch ( \SoapFault $e ) {			
+			throw new ACException("Error interactuando con API ({$e->getMessage()})", $this );			
+		}
+
 
 	}
 

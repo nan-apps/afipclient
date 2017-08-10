@@ -2,8 +2,7 @@
 use PHPUnit\Framework\TestCase;
 
 use AfipClient\Clients\Biller\Biller;
-use AfipClient\AccessTicketManager;
-use AfipClient\AccessTicket;
+use AfipClient\Clients\Auth\AccessTicketManager;
 
 use \Mockery as m;
 

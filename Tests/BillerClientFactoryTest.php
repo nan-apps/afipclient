@@ -15,7 +15,9 @@ class BillerClientFactoryTest extends TestCase {
 		$biller = BillerClientFactory::create( 
 			['conf' => ''],
 			m::mock('SoapClient'),
-			m::mock('AfipClient\AuthParamsProvider')
+			m::mock('AfipClient\AuthParamsProvider'),
+			m::mock('AfipClient\Clients\Biller\BillerRequestManager'),
+			m::mock('AfipClient\Clients\Biller\BillerResponseManager')
 		);
 
 		//the i expect this response

@@ -1,7 +1,8 @@
 <?php
 namespace AfipClient\Clients\Biller;
 
-use AfipClient\WSException;
+use AfipClient\ACException;
+use AfipClient\ACHelper;
 
 /**
  * Clase encargada de manejar la respuesta de la api afip facturacion 
@@ -10,25 +11,22 @@ Class BillerResponseManager {
 
 
 	/**
-	 * Parsea y prepara array para ser devuelto
+	 * Parsea y prepara array para ser devuelto en cae request
 	 * @param Array $response
 	 * @return Array
 	 */ 
-	public function validateAndParseCAE( \stdClass $response ){
+	public function validateAndParseCAERsp( \stdClass $response ){
 
-		return [];
-
-		/*
-			if( isset( $response->FECAESolicitarResult->Errors ) || 
+		if( isset( $response->FECAESolicitarResult->Errors ) || 
 			!isset( $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE )			
 			){
-			throw new WSException( "Error obteniendo CAE", $this,	 
-	    						   WSHelper::export_response( $response ) );
+			return false;
 		} 
 
 		$cae = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE;
 		$cae_validdate = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAEFchVto;
 		$invoice_number = (int) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CbteDesde;
+		$sale_point = (int) $response->FECAESolicitarResult->FeCabResp->PtoVta;
 		$tax_id = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->DocNro;
 		$invoice_date = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CbteFch;
 
@@ -36,12 +34,44 @@ Class BillerResponseManager {
 			'cae' => $cae, 
 			'cae_validdate' => date_create_from_format( 'Ymd', $cae_validdate ),
 			'invoice_number' => $invoice_number,
+			'sale_point' => $sale_point,
 			'invoice_date' => date_create_from_format( 'Ymd', $invoice_date ),
 			'tax_id' => $tax_id,
-			'full_response' => WSHelper::export_response( $response )
+			'full_response' => ACHelper::export_response( $response )
 		];	
 
-		*/
+		
+
+	}
+
+	/**
+	 * Parsea y valida respuesta de api para obtener ultimo nro autorizado
+	 * @param Array $response
+	 * @return int|boolean
+	 */ 
+	public function validateAndParseLastAuthorizedDocRsp( \stdClass $response ){
+		
+		if( isset( $response->FECompUltimoAutorizadoResult->Errors ) ){	    	
+	    	return false;
+	    } else {
+		    return intval( $response->FECompUltimoAutorizadoResult->CbteNro );
+	    }
+
+	}
+
+	/** 
+	 * Parsea y valida respuesta de api para obtener pto de venta autorizado
+	 * todo: multiples pto de venta?
+	 * @param Array $response
+	 * @return int|boolean
+	 */ 
+	public function validateAndParseAthorizedSalePoint( \stdClass $response ){
+
+		if( isset( $response->FEParamGetPtosVentaResult->Errors ) ){	    	
+	    	return false;
+	    } else {
+	    	return intval( $response->FEParamGetPtosVentaResult->ResultGet->PtoVenta->Nro );
+	    }
 
 	}
 	

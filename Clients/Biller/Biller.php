@@ -1,7 +1,7 @@
 <?php
 namespace AfipClient\Clients\Biller;
 
-use AfipClient\WSException;
+use AfipClient\ACException;
 
 /**
  * Clase encargada de facturar
@@ -26,7 +26,7 @@ Class Biller {
 	 * @return array [ string 'cae' => '',  \DateTime 'cae_validdate' => null, 
 	 *                 int 'invoice_number' => 0, string 'tax_id' => '', \DateTime 'invoice_date' => null
 	 * 				   stdClass 'full_response' => null ]	 
-	 * @throws  WSException 
+	 * @throws  ACException 
 	 */
 	public function requestCAE( array $data ){
 

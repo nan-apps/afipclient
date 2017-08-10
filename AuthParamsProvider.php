@@ -1,14 +1,14 @@
 <?php
 namespace AfipClient;
 
-use AfipClient\AccessTicketClient;
+use AfipClient\Clients\Client;
 
 interface AuthParamsProvider{
 
 	/**
 	 * @param Client $service
 	 */ 
-	public function getAuthParams( AccessTicketClient $service_client );
+	public function getAuthParams( Client $service_client );
 
 
 }

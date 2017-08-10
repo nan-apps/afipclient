@@ -1,10 +1,9 @@
 <?php
 namespace AfipClient\Factories;
-use AfipClient\Traits\FileManager;
+
+use AfipClient\ACHelper;
 
 Class SoapClientFactory{
-
-	use FileManager;
 
 	/**
 	 * Crea un cliente soap

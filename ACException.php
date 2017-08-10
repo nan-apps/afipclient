@@ -3,7 +3,7 @@ namespace AfipClient;
 
 use AfipClient\Clients\Client;
 
-class WSException extends \Exception {
+class ACException extends \Exception {
     
     protected $client;	
 	protected $ws_response;
