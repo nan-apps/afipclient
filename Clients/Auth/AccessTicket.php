@@ -1,5 +1,5 @@
 <?php
-namespace AfipClient;
+namespace AfipClient\Clients\Auth;
 
 /**
  * Ticket de acceso
@@ -131,6 +131,16 @@ class AccessTicket{
         if( $this->isEmpty() ) return true;
         
         return strtotime( $this->expiration_time ) < time();
+    }
+
+    /**
+     * isExpired alias
+     * @return boolean
+     */ 
+    public function isEmptyOrExpired(){
+
+        return $this->isExpired();
+        
     }
 
 }

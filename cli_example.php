@@ -1,6 +1,6 @@
 <?php
 
-use AfipClient\WSException;
+use AfipClient\ACException;
 use AfipClient\Factories\BillerFactory;
 
 if (php_sapi_name() != 'cli') {
@@ -51,8 +51,8 @@ try {
 
     var_dump( $biller->requestCAE( $data ) );
     
-} catch ( WSException $e ) {
-    var_dump( $e->getWSResponse() );
+} catch ( ACException $e ) {
+    var_dump( $e->getMessage() );
 }
 
 

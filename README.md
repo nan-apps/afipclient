@@ -58,7 +58,7 @@ try {
     
     $data = $biller->requestCAE( $params );
     
-} catch ( WSException $e ) {
+} catch ( ACException $e ) {
      var_dump([
         'description' => "{$e->getService()->getServiceName()}: {$e->getMessage()}",
         'log_api_response' => $e->getWSResponse()

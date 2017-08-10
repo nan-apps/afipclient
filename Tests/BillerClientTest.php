@@ -2,8 +2,8 @@
 use PHPUnit\Framework\TestCase;
 
 use AfipClient\Clients\Biller\BillerClient;
-use AfipClient\AccessTicketManager;
-use AfipClient\AccessTicket;
+use AfipClient\Clients\Auth\AccessTicketManager;
+use AfipClient\Clients\Auth\AccessTicket;
 
 use \Mockery as m;
 
@@ -19,7 +19,9 @@ class BillerClientTest extends TestCase {
 
  		$this->biller = new BillerClient(
 			m::mock('SoapClient'),
-			m::mock('AfipClient\AuthParamsProvider')
+			m::mock('AfipClient\AuthParamsProvider'),
+			m::mock('AfipClient\Clients\Biller\BillerRequestManager'),
+			m::mock('AfipClient\Clients\Biller\BillerResponseManager')
 		);
 
  	}
@@ -37,50 +39,251 @@ class BillerClientTest extends TestCase {
 		new BillerClient();
 	}	
 
+	public function testResquestCAE(){
 
-	/**	 
-	 * @expectedException AfipClient\WSException
-	 */  
-	public function testAccessTicketShouldHaveTaxId(){
+		$provider_mock = m::mock('AfipClient\AuthParamsProvider');	
+		$provider_mock->shouldReceive( ['getAuthParams' => ['auth_params'] ] )
+					  ->with('AfipClient\Clients\Biller\BillerClient')
+					  ->once();
 
-		$at_mock = m::mock('AfipClient\AccessTicket');
-		$at_mock->shouldReceive('getTaxId')
-			    ->once()
-			    ->andReturn( null );
+		$req_mock = m::mock('AfipClient\Clients\Biller\BillerRequestManager');
+		$req_mock->shouldReceive('buildCAEParams')
+		 		 ->once()
+				 ->with('AfipClient\Clients\Biller\BillerClient', ['auth_params'], ['data'] )
+				 ->andReturn( ['request'] );
 
-		$biller = new BillerClient(
-			m::mock('SoapClient'),
-			m::mock('AfipClient\AccessTicketProvider'),
-			$at_mock
-		);
+		$response = m::mock('stdClass');
+		
+		$soap_mock = m::mock('SoapClient');
+		$soap_mock->shouldReceive('FECAESolicitar')
+				  ->once()
+				  ->with( ['request'] )
+				  ->andReturn( $response );
 
-		$biller->getAT();
-	}
 
-	 
-	public function testShouldReturnAccessTicket(){
-
-		$ws_mock = m::mock('AfipClient\Clients\Client');
-
-		$at_mock = m::mock('AfipClient\AccessTicket');
-		$at_mock->shouldReceive('getTaxId')
-			    ->once()
-			    ->andReturn( '12345678' );
-
-		$atp_mock = m::mock('AfipClient\AccessTicketProvider');
-		$atp_mock->shouldReceive('processClientAccessTicket')
-			     ->once();
+		$rsp_mock = m::mock('AfipClient\Clients\Biller\BillerResponseManager');
+		$rsp_mock->shouldReceive('validateAndParseCAERsp')
+		 		 ->once()
+				 ->with( $response )
+				 ->andReturn( ['cae'] );
 
 		$biller = new BillerClient(
-			m::mock('SoapClient'),
-			$atp_mock,
-			$at_mock
+			$soap_mock,
+			$provider_mock,
+			$req_mock,
+			$rsp_mock
 		);
 
-		$this->assertInstanceOf( 'AfipClient\AccessTicket', $biller->getAT() );
+		$this->assertEquals( $biller->requestCAE( ['data'] ), ['cae'] );
+
 	}
 
-	
+	/**
+	 * @expectedException AfipClient\ACException
+	 */ 
+	public function testResquestCAEError(){
+
+		$provider_mock = m::mock('AfipClient\AuthParamsProvider');	
+		$provider_mock->shouldReceive( ['getAuthParams' => ['auth_params'] ] )
+					  ->with('AfipClient\Clients\Biller\BillerClient')
+					  ->once();
+
+		$req_mock = m::mock('AfipClient\Clients\Biller\BillerRequestManager');
+		$req_mock->shouldReceive('buildCAEParams')
+		 		 ->once()
+				 ->with('AfipClient\Clients\Biller\BillerClient', ['auth_params'], ['data'] )
+				 ->andReturn( ['request'] );
+
+		$response = m::mock('stdClass');
+		
+		$soap_mock = m::mock('SoapClient');
+		$soap_mock->shouldReceive('FECAESolicitar')
+				  ->once()
+				  ->with( ['request'] )
+				  ->andReturn( $response );
+
+
+		$rsp_mock = m::mock('AfipClient\Clients\Biller\BillerResponseManager');
+		$rsp_mock->shouldReceive('validateAndParseCAERsp')
+		 		 ->once()
+				 ->with( $response )
+				 ->andReturn( false );
+
+		$biller = new BillerClient(
+			$soap_mock,
+			$provider_mock,
+			$req_mock,
+			$rsp_mock
+		);
+
+		$biller->requestCAE( ['data'] );
+
+	}
+
+
+	public function testGetLastAuthorizedDoc(){
+
+		$provider_mock = m::mock('AfipClient\AuthParamsProvider');	
+		$provider_mock->shouldReceive( ['getAuthParams' => ['auth_params'] ] )
+					  ->with('AfipClient\Clients\Biller\BillerClient')
+					  ->once();
+
+		$req_mock = m::mock('AfipClient\Clients\Biller\BillerRequestManager');
+		$req_mock->shouldReceive('buildLastAuthorizedDocParams')
+		 		 ->once()
+				 ->with( ['auth_params'], ['data'] )
+				 ->andReturn( ['request'] );
+
+		$response = m::mock('stdClass');
+		
+		$soap_mock = m::mock('SoapClient');
+		$soap_mock->shouldReceive('FECompUltimoAutorizado')
+				  ->once()
+				  ->with( ['request'] )
+				  ->andReturn( $response );
+
+
+		$rsp_mock = m::mock('AfipClient\Clients\Biller\BillerResponseManager');
+		$rsp_mock->shouldReceive('validateAndParseLastAuthorizedDocRsp')
+		 		 ->once()
+				 ->with( $response )
+				 ->andReturn( 1 );
+
+		$biller = new BillerClient(
+			$soap_mock,
+			$provider_mock,
+			$req_mock,
+			$rsp_mock
+		);
+
+		$this->assertEquals( $biller->getLastAuthorizedDoc( ['data'] ), 1 );
+
+	} 
+
+
+	/**
+	 * @expectedException AfipClient\ACException
+	 */ 
+	public function testGetLastAuthorizedDocError(){
+
+		$provider_mock = m::mock('AfipClient\AuthParamsProvider');	
+		$provider_mock->shouldReceive( ['getAuthParams' => ['auth_params'] ] )
+					  ->with('AfipClient\Clients\Biller\BillerClient')
+					  ->once();
+
+		$req_mock = m::mock('AfipClient\Clients\Biller\BillerRequestManager');
+		$req_mock->shouldReceive('buildLastAuthorizedDocParams')
+		 		 ->once()
+				 ->with( ['auth_params'], ['data'] )
+				 ->andReturn( ['request'] );
+
+		$response = m::mock('stdClass');
+		
+		$soap_mock = m::mock('SoapClient');
+		$soap_mock->shouldReceive('FECompUltimoAutorizado')
+				  ->once()
+				  ->with( ['request'] )
+				  ->andReturn( $response );
+
+
+		$rsp_mock = m::mock('AfipClient\Clients\Biller\BillerResponseManager');
+		$rsp_mock->shouldReceive('validateAndParseLastAuthorizedDocRsp')
+		 		 ->once()
+				 ->with( $response )
+				 ->andReturn( false );
+
+		$biller = new BillerClient(
+			$soap_mock,
+			$provider_mock,
+			$req_mock,
+			$rsp_mock
+		);
+
+		$biller->getLastAuthorizedDoc( ['data'] );
+
+	} 
+
+	public function testGetAthorizedSalePoint(){
+
+		$provider_mock = m::mock('AfipClient\AuthParamsProvider');	
+		$provider_mock->shouldReceive( ['getAuthParams' => ['auth_params'] ] )
+					  ->with('AfipClient\Clients\Biller\BillerClient')
+					  ->once();
+
+		$req_mock = m::mock('AfipClient\Clients\Biller\BillerRequestManager');
+		$req_mock->shouldReceive('buildAthorizedSalePointParams')
+		 		 ->once()
+				 ->with( ['auth_params'] )
+				 ->andReturn( ['request'] );
+
+		$response = m::mock('stdClass');
+		
+		$soap_mock = m::mock('SoapClient');
+		$soap_mock->shouldReceive('FEParamGetPtosVenta')
+				  ->once()
+				  ->with( ['request'] )
+				  ->andReturn( $response );
+
+
+		$rsp_mock = m::mock('AfipClient\Clients\Biller\BillerResponseManager');
+		$rsp_mock->shouldReceive('validateAndParseAthorizedSalePoint')
+		 		 ->once()
+				 ->with( $response )
+				 ->andReturn( 1 );
+
+		$biller = new BillerClient(
+			$soap_mock,
+			$provider_mock,
+			$req_mock,
+			$rsp_mock
+		);
+
+		$this->assertEquals( $biller->getAthorizedSalePoint( ['data'] ), 1 );
+
+	} 
+
+
+	/**
+	 * @expectedException AfipClient\ACException
+	 */ 
+	public function testGetAthorizedSalePointError(){
+
+		$provider_mock = m::mock('AfipClient\AuthParamsProvider');	
+		$provider_mock->shouldReceive( ['getAuthParams' => ['auth_params'] ] )
+					  ->with('AfipClient\Clients\Biller\BillerClient')
+					  ->once();
+
+		$req_mock = m::mock('AfipClient\Clients\Biller\BillerRequestManager');
+		$req_mock->shouldReceive('buildAthorizedSalePointParams')
+		 		 ->once()
+				 ->with( ['auth_params'] )
+				 ->andReturn( ['request'] );
+
+		$response = m::mock('stdClass');
+		
+		$soap_mock = m::mock('SoapClient');
+		$soap_mock->shouldReceive('FEParamGetPtosVenta')
+				  ->once()
+				  ->with( ['request'] )
+				  ->andReturn( $response );
+
+
+		$rsp_mock = m::mock('AfipClient\Clients\Biller\BillerResponseManager');
+		$rsp_mock->shouldReceive('validateAndParseAthorizedSalePoint')
+		 		 ->once()
+				 ->with( $response )
+				 ->andReturn( false );
+
+		$biller = new BillerClient(
+			$soap_mock,
+			$provider_mock,
+			$req_mock,
+			$rsp_mock
+		);
+
+		$biller->getAthorizedSalePoint( ['data'] );
+
+	} 
 
 
 

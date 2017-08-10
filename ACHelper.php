@@ -1,7 +1,7 @@
 <?php
 namespace AfipClient;
 
-class WSHelper{
+class ACHelper{
 
 	/**
 	 * Transforma la respuesta del WS en una array y luego en una representacion stringifada de ese array
@@ -12,11 +12,27 @@ class WSHelper{
 	}
 
 	/**
-     * Elimina los archivos pasados
-     * @param Array $files
-     */ 
-    public static function unlink_files( Array $files ){
-        array_map('unlink', $files );
-    }
+	 * imprime data en formato para debug
+	 * @param $data
+	 */ 
+	public static function pr( $data ){
+
+		echo "<pre>";
+		var_dump( $data );
+		echo "</pre>";
+
+	}
+
+	/**
+	 * imprime data en formato para debug y luego hace die()
+	 * @param $data
+	 */ 
+	public static function prd( $data ){
+
+		self::pr($data);
+		die();
+
+	}
+	
 
 }

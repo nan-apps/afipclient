@@ -3,7 +3,7 @@ namespace AfipClient\Factories;
 
 use AfipClient\Factories\SoapClientFactory;
 use AfipClient\Clients\Auth\AuthClient;
-
+use AfipClient\ACHelper;
 
 Class AuthClientFactory{
 
