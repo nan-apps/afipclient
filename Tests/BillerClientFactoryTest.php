@@ -4,32 +4,32 @@ use PHPUnit\Framework\TestCase;
 use AfipClient\Factories\BillerClientFactory;
 use \Mockery as m;
 
-class BillerClientFactoryTest extends TestCase {
+class BillerClientFactoryTest extends TestCase
+{
+    public function tearDown()
+    {
+        m::close();
+    }
 
-	public function tearDown(){
- 		m::close();
- 	}
+    public function testCreateShouldReturnAnBillerClient()
+    {
+        $biller = BillerClientFactory::create(
+            ['conf' => ''],
+            m::mock('SoapClient'),
+            m::mock('AfipClient\AuthParamsProvider'),
+            m::mock('AfipClient\Clients\Biller\BillerRequestManager'),
+            m::mock('AfipClient\Clients\Biller\BillerResponseManager')
+        );
 
-	public function testCreateShouldReturnAnBillerClient(){
-				
-		$biller = BillerClientFactory::create( 
-			['conf' => ''],
-			m::mock('SoapClient'),
-			m::mock('AfipClient\AuthParamsProvider'),
-			m::mock('AfipClient\Clients\Biller\BillerRequestManager'),
-			m::mock('AfipClient\Clients\Biller\BillerResponseManager')
-		);
+        //the i expect this response
+        $this->assertInstanceOf('AfipClient\Clients\Biller\BillerClient', $biller);
+    }
 
-		//the i expect this response
-	 	$this->assertInstanceOf( 'AfipClient\Clients\Biller\BillerClient', $biller );
-
-	}
-
-	/**	 
-	 * @expectedException \ArgumentCountError
-	 */  
-	public function testCreateRequiredDependencies(){
-		BillerClientFactory::create();
-	}
-
+    /**
+     * @expectedException \ArgumentCountError
+     */
+    public function testCreateRequiredDependencies()
+    {
+        BillerClientFactory::create();
+    }
 }

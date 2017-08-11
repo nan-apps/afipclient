@@ -6,45 +6,38 @@ use AfipClient\Clients\Biller\BillerClient;
 use AfipClient\Clients\Auth\AccessTicketManager;
 use \Mockery as m;
 
-class AuthClientTest extends TestCase {
+class AuthClientTest extends TestCase
+{
+    private $auth;
 
-	private $auth;
+    public function tearDown()
+    {
+        m::close();
+    }
 
-	public function tearDown(){
- 		m::close();
- 	}
+    public function setUp()
+    {
+        $this->auth = new AuthClient(
+            m::mock('SoapClient')
+        );
+    }
 
- 	public function setUp(){
+    public function testInstance()
+    {
+        $this->assertInstanceOf('AfipClient\Clients\Auth\AuthClient', $this->auth);
+    }
 
- 		$this->auth = new AuthClient(
-			m::mock('SoapClient')
-		);
+    public function testSendCms()
+    {
+        $soap_mock = m::mock('SoapClient');
+        $soap_mock->shouldReceive(['loginCms' => 'response' ])
+                  ->with([ 'in0' => 'login_ticket_request_cms' ])
+                  ->once();
 
- 	}
+        $auth = new AuthClient(
+            $soap_mock
+        );
 
-	public function testInstance(){
-		
-	 	$this->assertInstanceOf( 'AfipClient\Clients\Auth\AuthClient', $this->auth );
-
-	}
-
-	public function testSendCms(){
-
-		$soap_mock = m::mock('SoapClient');
-		$soap_mock->shouldReceive(['loginCms' => 'response' ])
-				  ->with( [ 'in0' => 'login_ticket_request_cms' ] )
-				  ->once();
-
-		$auth = new AuthClient(
-			$soap_mock
-		);
-
-		$this->assertEquals( $auth->sendCms( 'login_ticket_request_cms' ), 'response' );
-
-	}
-
-
-
-
-
+        $this->assertEquals($auth->sendCms('login_ticket_request_cms'), 'response');
+    }
 }

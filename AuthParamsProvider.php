@@ -3,12 +3,11 @@ namespace AfipClient;
 
 use AfipClient\Clients\Client;
 
-interface AuthParamsProvider{
+interface AuthParamsProvider
+{
 
-	/**
-	 * @param Client $service
-	 */ 
-	public function getAuthParams( Client $service_client );
-
-
+    /**
+     * @param Client $service
+     */
+    public function getAuthParams(Client $service_client);
 }

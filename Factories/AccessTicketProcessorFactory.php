@@ -13,41 +13,47 @@ use AfipClient\Factories\LoginTicketRequestFactory;
 use AfipClient\Factories\AuthClientFactory;
 use AfipClient\Utils\FileManager;
 
+class AccessTicketProcessorFactory
+{
 
-Class AccessTicketProcessorFactory{
+    /**
+    * Crea un AccessTicketProcessor, el core de la lib
+    * @param array $conf
+    * @return AccessTickerProcessor
+    */
+    public static function create(
 
-	/**
-	 * Crea un AccessTicketProcessor, el core de la lib
-	 * @param array $conf
-	 * @return AccessTickerProcessor
-	 */ 
-	public static function create( Array $conf,
-								   AuthClient $auth_client = null,
-								   AccessTicket $access_ticket = null,
-								   AccessTicketStore $access_ticket_store = null, 
-								   AccessTicketLoader $access_ticket_loader = null,
-								   LoginTicketRequest $login_ticket_request = null, 
-								   LoginTicketResponse $login_ticket_response = null ){
+        array $conf,
+        AuthClient $auth_client = null,
+        AccessTicket $access_ticket = null,
+        AccessTicketStore $access_ticket_store = null,
+        AccessTicketLoader $access_ticket_loader = null,
+        LoginTicketRequest $login_ticket_request = null,
+        LoginTicketResponse $login_ticket_response = null
 
-		return new AccessTicketProcessor( 
-			
-			$auth_client ? $auth_client : AuthClientFactory::create( $conf ),
-			
-			$access_ticket ? $access_ticket : new AccessTicket( $conf['tax_id'] ), 	
-            
-            $access_ticket_store ? $access_ticket_store : new AccessTicketDiskStore( new FileManager() ), 		 
-            
-            $access_ticket_loader ? $access_ticket_loader : new AccessTicketLoader(), 		 
-           
-            $login_ticket_request ? $login_ticket_request : LoginTicketRequestFactory::create( $conf['auth_cert_path'], 
-            																			       $conf['auth_key_path'], 
-            																			       $conf['auth_passprhase'] ), 
+    ) {
+        return new AccessTicketProcessor(
 
-            $login_ticket_response ? $login_ticket_response : new LoginTicketResponse()   
+            $auth_client ? $auth_client : AuthClientFactory::create($conf),
 
-        );	
+            $access_ticket ? $access_ticket : new AccessTicket($conf['tax_id']),
 
-	}
+            $access_ticket_store ? $access_ticket_store : new AccessTicketDiskStore(new FileManager()),
+
+            $access_ticket_loader ? $access_ticket_loader : new AccessTicketLoader(),
+
+            $login_ticket_request ? $login_ticket_request : LoginTicketRequestFactory::create(
 
 
+                $conf['auth_cert_path'],
+                $conf['auth_key_path'],
+                $conf['auth_passprhase']
+
+
+                ),
+
+            $login_ticket_response ? $login_ticket_response : new LoginTicketResponse()
+
+        );
+    }
 }

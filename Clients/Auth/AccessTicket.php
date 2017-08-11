@@ -4,8 +4,8 @@ namespace AfipClient\Clients\Auth;
 /**
  * Ticket de acceso
  */
-class AccessTicket{
-	
+class AccessTicket
+{
     private $token;
     private $sign;
     private $expiration_time;
@@ -18,10 +18,11 @@ class AccessTicket{
      * @param string $sign
      * @param string $generation_time
      * @param string $expiration_time
-     */ 
-    public function __construct( $tax_id = null, $token = null, $sign = null, $generation_time = null, 
-                                 $expiration_time = null ){
-
+     */
+    public function __construct( $tax_id = null, $token = null, $sign = null,
+                                 $generation_time = null, $expiration_time = null
+ 
+    ) {
         $this->tax_id = $tax_id;
         $this->token = $token;
         $this->sign = $sign;
@@ -32,7 +33,7 @@ class AccessTicket{
     /**
      * Devuelve el token
      * @return string
-     */ 
+     */
     public function getToken()
     {
         return $this->token;
@@ -41,7 +42,7 @@ class AccessTicket{
     /**
      * Devuelve la firma
      * @return string
-     */ 
+     */
     public function getSign()
     {
         return $this->sign;
@@ -50,7 +51,7 @@ class AccessTicket{
     /**
      * Devuelve momento de creacion
      * @return string
-     */ 
+     */
     public function getGenerationTime()
     {
         return $this->generation_time;
@@ -59,88 +60,95 @@ class AccessTicket{
     /**
      * Devuelve momento de vencimiento
      * @return string
-     */ 
+     */
     public function getExpirationTime()
     {
         return $this->expiration_time;
     }
 
-    /** 
+    /**
      * Devuelve cuit
      * @return string
-     */ 
-    public function getTaxId(){
+     */
+    public function getTaxId()
+    {
         return $this->tax_id;
     }
 
     /**
      * Setea token
      * @param string $token
-     */ 
-    public function setToken( $token ){
+     */
+    public function setToken($token)
+    {
         return $this->token = $token;
     }
 
     /**
      * Setea sign
      * @param string $sign
-     */ 
-    public function setSign( $sign ){
+     */
+    public function setSign($sign)
+    {
         return $this->sign = $sign;
     }
 
     /**
      * Setea fecha generacion
      * @param string $generation_time
-     */ 
-    public function setGenerationTime( $generation_time ){
+     */
+    public function setGenerationTime($generation_time)
+    {
         return $this->generation_time = $generation_time;
     }
 
     /**
      * Setea fecha vencimiento
      * @param string $expiration_time
-     */ 
-    public function setExpirationTime( $expiration_time ){
+     */
+    public function setExpirationTime($expiration_time)
+    {
         return $this->expiration_time = $expiration_time;
     }
 
     /**
      * Setea cuit
      * @param string $tax_id
-     */ 
-    public function setTaxId( $tax_id ){
+     */
+    public function setTaxId($tax_id)
+    {
         return $this->tax_id = $tax_id;
     }
 
     /**
      * True si alguno de sus campos obligatorios esta vacio
      * @return boolean
-     */ 
-    public function isEmpty(){
-        return !$this->token || !$this->sign || !$this->generation_time || 
+     */
+    public function isEmpty()
+    {
+        return !$this->token || !$this->sign || !$this->generation_time ||
                !$this->expiration_time || !$this->tax_id;
     }
 
     /**
      * True si el momento de vencimiento ya paso
      * @return boolean
-     */ 
-    public function isExpired(){
-
-        if( $this->isEmpty() ) return true;
+     */
+    public function isExpired()
+    {
+        if ($this->isEmpty()) {
+            return true;
+        }
         
-        return strtotime( $this->expiration_time ) < time();
+        return strtotime($this->expiration_time) < time();
     }
 
     /**
      * isExpired alias
      * @return boolean
-     */ 
-    public function isEmptyOrExpired(){
-
+     */
+    public function isEmptyOrExpired()
+    {
         return $this->isExpired();
-        
     }
-
 }

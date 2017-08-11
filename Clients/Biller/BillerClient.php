@@ -9,115 +9,123 @@ use AfipClient\Clients\Biller\BillerRequestManager;
 use AfipClient\Clients\Biller\BillerResponseManager;
 
 /**
- * Client de facturación electrónica, encargado de interactuar con api WSFEV1 de Afip 
+ * Client de facturación electrónica, encargado de interactuar con api WSFEV1 de Afip
  */
-Class BillerClient extends Client{
+class BillerClient extends Client
+{
+    protected $client_name = 'wsfe';
+    protected $soap_client;
+    protected $auth_params_provider;
+    protected $request_manager;
+    protected $response_manager;
 
+    /**
+     * @param SoapClient $soap_client SoapClientFactory::create( [wsdl], [end_point] )
+     * @param AuthParamsProvider $acces_ticket_manager el objeto encargado de procesar y completar el AccessTicket
+     * @param BillerRequestManager $request_manager el objeto encargado de manejar la consulta
+     * @param BillerResponseManager $biller_response el objeto encargado de manejar la respuesta
+     */
+    public function __construct( 
+                                 \SoapClient $soap_client,
+                                 AuthParamsProvider $auth_params_provider,
+                                 BillerRequestManager $request_manager,
+                                 BillerResponseManager $response_manager
+ 
+    ) {
+        $this->soap_client = $soap_client;
+        $this->auth_params_provider = $auth_params_provider;
+        $this->request_manager = $request_manager;
+        $this->response_manager = $response_manager;
+    }
 
-	protected $client_name = 'wsfe';
-	protected $soap_client;
-	protected $auth_params_provider;	
-	protected $request_manager;	
-	protected $response_manager;	
+        
+    /**
+     * Solicitar cae y fecha de vencimiento al WS de facturacion
+     * @param array $data
+     * @return array [ string 'cae' => '',  \DateTime 'cae_validdate' => null,
+     *                 int 'invoice_number' => 0, string 'tax_id' => '', \DateTime 'invoice_date' => null
+     * 				   stdClass 'full_response' => null ]
+     * @throws  ACException
+     */
+    public function requestCAE($data)
+    {
+        $request_params = $this->request_manager->buildCAEParams($this, $this->_getAuthParams(), $data);
 
-	/**
-	 * @param SoapClient $soap_client SoapClientFactory::create( [wsdl], [end_point] )
-	 * @param AuthParamsProvider $acces_ticket_manager el objeto encargado de procesar y completar el AccessTicket
-	 * @param BillerRequestManager $request_manager el objeto encargado de manejar la consulta
-	 * @param BillerResponseManager $biller_response el objeto encargado de manejar la respuesta
-	 */ 
-	public function __construct( \SoapClient $soap_client,
-								 AuthParamsProvider $auth_params_provider,
-								 BillerRequestManager $request_manager,
-								 BillerResponseManager $response_manager  ){
+        $response = $this->soap_client->FECAESolicitar($request_params);
 
-		$this->soap_client = $soap_client;
-		$this->auth_params_provider = $auth_params_provider;	
-		$this->request_manager = $request_manager;	
-		$this->response_manager = $response_manager;
-	}
+        $parsed_data = $this->response_manager->validateAndParseCAERsp($response);
 
-		
-	/**
-	 * Solicitar cae y fecha de vencimiento al WS de facturacion
-	 * @param array $data  
-	 * @return array [ string 'cae' => '',  \DateTime 'cae_validdate' => null, 
-	 *                 int 'invoice_number' => 0, string 'tax_id' => '', \DateTime 'invoice_date' => null
-	 * 				   stdClass 'full_response' => null ]	 
-	 * @throws  ACException 
-	 */
-	public function requestCAE( $data ){
+        if (!$parsed_data) {
+            throw new ACException(
+                "Error obteniendo CAE",
+                $this,
+                                   ACHelper::export_response($response)
+            );
+        }
 
-		$request_params = $this->request_manager->buildCAEParams( $this, $this->_getAuthParams(), $data );
+        return $parsed_data;
+    }
 
-		$response = $this->soap_client->FECAESolicitar( $request_params );
+    /**
+     * Obtiene el último número de comprobante autorizado
+     * @param Array $data [ 'PtoVta' => '', 'CbteTipo' => '' ]
+     * @return int
+     */
+    public function getLastAuthorizedDoc($data)
+    {
+        $request_params = $this->request_manager
+                               ->buildLastAuthorizedDocParams($this->_getAuthParams(), $data);
 
-		$parsed_data = $this->response_manager->validateAndParseCAERsp( $response );
+        $response = $this->soap_client->FECompUltimoAutorizado($request_params);
 
-		if( !$parsed_data ){
-			throw new ACException( "Error obteniendo CAE", $this,	 
-	    						   ACHelper::export_response( $response ) );
-		} 
+        $doc_number = $this->response_manager
+                           ->validateAndParseLastAuthorizedDocRsp($response);
 
-		return $parsed_data;
-		
-	}	
+        if (!$doc_number) {
+            throw new ACException(
+                "Error obteniendo ultimo número de comprobante autorizado",
+                $this,
+                                   ACHelper::export_response($response)
+            );
+        }
 
-	/**
-	 * Obtiene el último número de comprobante autorizado
-	 * @param Array $data [ 'PtoVta' => '', 'CbteTipo' => '' ]
-	 * @return int 
-	 */ 
-	public function getLastAuthorizedDoc( $data ){
-		
-		$request_params = $this->request_manager
-							   ->buildLastAuthorizedDocParams( $this->_getAuthParams(), $data );    
+        return $doc_number;
+    }
 
-		$response = $this->soap_client->FECompUltimoAutorizado( $request_params );
+    /**
+     * Obtiene puntos de centa autorizados
+     * @return int
+     */
+    public function getAthorizedSalePoint()
+    {
+        $request_params = $this->request_manager
+                              ->buildAthorizedSalePointParams($this->_getAuthParams());
 
-		$doc_number = $this->response_manager
-						   ->validateAndParseLastAuthorizedDocRsp( $response );
+        $response = $this->soap_client->FEParamGetPtosVenta($request_params);
 
-		if( !$doc_number ){
-			throw new ACException("Error obteniendo ultimo número de comprobante autorizado", $this,
-	    						   ACHelper::export_response( $response ) );
-		}
+        $salepoint_num = $this->response_manager
+                              ->validateAndParseAthorizedSalePoint($response);
 
-		return $doc_number;
-	    
-	}
+        if (!$salepoint_num) {
+            throw new ACException(
+            
+                "Error obteniendo ultimo número de comprobante autorizado",
+            
+                $this,
+                                   ACHelper::export_response($response)
+            
+            );
+        }
+        
+        return $salepoint_num;
+    }
 
-	/**
-	 * Obtiene puntos de centa autorizados
-	 * @return int 
-	 */ 
-	public function getAthorizedSalePoint(){
-
-		$request_params = $this->request_manager
-							  ->buildAthorizedSalePointParams( $this->_getAuthParams() );
-
-		$response = $this->soap_client->FEParamGetPtosVenta( $request_params );
-
-		$salepoint_num = $this->response_manager
-							  ->validateAndParseAthorizedSalePoint( $response );
-
-	    if( !$salepoint_num ){	    	
-	    	throw new ACException("Error obteniendo ultimo número de comprobante autorizado", $this,
-	    						   ACHelper::export_response( $response ) );
-	    }
-	    
-	    return $salepoint_num;
-
-	}
-
-	/**
-	 * Devuelve array con datos de acceso consultando el AccessTicket
-	 * @return array ['token' => '', 'sign' => '', 'cuit' => '']
-	 */ 
-	private function _getAuthParams(){
-		return $this->auth_params_provider->getAuthParams( $this );
-	}
-
-	
-
+    /**
+     * Devuelve array con datos de acceso consultando el AccessTicket
+     * @return array ['token' => '', 'sign' => '', 'cuit' => '']
+     */
+    private function _getAuthParams()
+    {
+        return $this->auth_params_provider->getAuthParams($this);
+    }
 }

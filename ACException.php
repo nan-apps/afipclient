@@ -3,19 +3,19 @@ namespace AfipClient;
 
 use AfipClient\Clients\Client;
 
-class ACException extends \Exception {
-    
-    protected $client;	
-	protected $ws_response;
+class ACException extends \Exception
+{
+    protected $client;
+    protected $ws_response;
 
-	/**
-	 * @param string $message
-	 * @param string $ws_response
-	 * @param int $code
-	 */ 
-    function __construct( $message = '', Client $client = null, $ws_response = '', $code = 0  ) {
-
-        parent::__construct( $message, $code );
+    /**
+     * @param string $message
+     * @param string $ws_response
+     * @param int $code
+     */
+    public function __construct($message = '', Client $client = null, $ws_response = '', $code = 0)
+    {
+        parent::__construct($message, $code);
 
         $this->ws_response = $ws_response;
         $this->client = $client;
@@ -23,16 +23,17 @@ class ACException extends \Exception {
 
     /**
      * @return string
-     */  
-    public function getWSResponse(){
-    	return $this->ws_response;
+     */
+    public function getWSResponse()
+    {
+        return $this->ws_response;
     }
 
     /**
      * @return Client
      */
-    public function getClient(){
-    	return $this->client;
+    public function getClient()
+    {
+        return $this->client;
     }
-
 }
