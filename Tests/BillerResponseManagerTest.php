@@ -57,11 +57,13 @@ class BillerResponseManagerTest extends TestCase
         $tax_id = '123456';
         $invoice_date = '20170707';
         $sale_point = 1;
+        $inv_type = 6;
 
         $fake_response = (object) [
             'FECAESolicitarResult' => (object) [
                 'FeCabResp' => (object) [
-                    'PtoVta' => $sale_point
+                    'PtoVta' => $sale_point,
+                    'CbteTipo' => $inv_type
                 ],
                 'FeDetResp' => (object) [
                     'FECAEDetResponse' => (object) [
@@ -83,6 +85,7 @@ class BillerResponseManagerTest extends TestCase
                 'cae_validdate' => date_create_from_format('Ymd', $cae_validdate),
                 'invoice_number' => $invoice_number,
                 'sale_point' => $sale_point,
+                'inv_type' => $inv_type,
                 'invoice_date' => date_create_from_format('Ymd', $invoice_date),
                 'tax_id' => $tax_id,
                 'full_response' => ACHelper::export_response($fake_response)

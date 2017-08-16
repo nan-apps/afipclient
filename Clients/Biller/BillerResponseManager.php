@@ -28,6 +28,7 @@ class BillerResponseManager
         $cae_validdate = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAEFchVto;
         $invoice_number = (int) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CbteDesde;
         $sale_point = (int) $response->FECAESolicitarResult->FeCabResp->PtoVta;
+        $inv_type = (int) $response->FECAESolicitarResult->FeCabResp->CbteTipo;
         $tax_id = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->DocNro;
         $invoice_date = (string) $response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CbteFch;
 
@@ -36,6 +37,7 @@ class BillerResponseManager
             'cae_validdate' => date_create_from_format('Ymd', $cae_validdate),
             'invoice_number' => $invoice_number,
             'sale_point' => $sale_point,
+            'inv_type' => $inv_type,
             'invoice_date' => date_create_from_format('Ymd', $invoice_date),
             'tax_id' => $tax_id,
             'full_response' => ACHelper::export_response($response)
