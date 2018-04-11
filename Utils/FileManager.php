@@ -6,8 +6,6 @@ use AfipClient\ACHelper;
 
 class FileManager
 {
-    private $temp_folder_path = __DIR__ . "/../Temp/";
-
     /**
      * Devuelve el contenido del archivo temporal ingresado
      * @param string $file_name
@@ -53,7 +51,7 @@ class FileManager
      */
     public function getTempFolderPath($file_name = null, $file_check = false)
     {
-        $path = $this->temp_folder_path;
+        $path = sys_get_temp_dir();
 
         if ($file_name) {
             $path .= $file_name;
