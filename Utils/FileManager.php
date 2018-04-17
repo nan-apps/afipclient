@@ -2,7 +2,6 @@
 namespace AfipClient\Utils;
 
 use AfipClient\ACException;
-use AfipClient\ACHelper;
 
 class FileManager
 {
@@ -51,7 +50,7 @@ class FileManager
      */
     public function getTempFolderPath($file_name = null, $file_check = false)
     {
-        $path = sys_get_temp_dir();
+        $path = sys_get_temp_dir() . '/';
 
         if ($file_name) {
             $path .= $file_name;
