@@ -96,7 +96,7 @@ class BillerClient extends Client
      * Obtiene puntos de centa autorizados
      * @return int
      */
-    public function getAthorizedSalePoint()
+    public function getAuthorizedSalePoint()
     {
         $request_params = $this->request_manager
                               ->buildAthorizedSalePointParams($this->_getAuthParams());

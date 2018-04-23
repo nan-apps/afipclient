@@ -26,7 +26,7 @@ class BillerRequestManager
             $invoice_number = $data['CbteDesde'];
         }
 
-        $sale_point = !empty($data['PtoVta']) ? $data['PtoVta'] : $biller_client->getAthorizedSalePoint();
+        $sale_point = !empty($data['PtoVta']) ? $data['PtoVta'] : $biller_client->getAuthorizedSalePoint();
 
         $params = [
             'Auth' => $auth_params,
