@@ -81,7 +81,7 @@ class BillerClient extends Client
         $doc_number = $this->response_manager
                            ->validateAndParseLastAuthorizedDocRsp($response);
 
-        if (!$doc_number) {
+        if (!$doc_number && $doc_number !== 0) {
             throw new ACException(
                 "Error obteniendo ultimo número de comprobante autorizado",
                 $this,
