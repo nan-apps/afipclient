@@ -51,12 +51,12 @@ class BillerRequestManager
                                     'ImpTrib' => $data['ImpTrib'],
                                     'ImpOpEx' => $data['ImpOpEx'],
                                     'ImpTotal' => $data['ImpTotal'],
-                                    'FchServDesde' => $data['FchServDesde'] ?? null,
-                                    'FchServHasta' => $data['FchServHasta'] ?? null,
-                                    'FchVtoPago' => $data['FchVtoPago'] ?? null,
+                                    'FchServDesde' => isset($data['FchServDesde']) ? $data['FchServDesde'] : null,
+                                    'FchServHasta' => isset($data['FchServHasta']) ? $data['FchServHasta'] : null,
+                                    'FchVtoPago' => isset($data['FchVtoPago']) ? $data['FchVtoPago'] : null,
                                     'MonId' => $data['MonId'],
                                     'MonCotiz' => $data['MonCotiz'],
-                                    'Iva' => $data['Iva'] ?? null
+                                    'Iva' => isset($data['Iva']) ? $data['Iva'] : null
                                 ],
                             ],
                         ],
