@@ -81,7 +81,7 @@ class BillerClient extends Client
         $doc_number = $this->response_manager
                            ->validateAndParseLastAuthorizedDocRsp($response);
 
-        if (!$doc_number) {
+        if (!$doc_number && $doc_number !== 0) {
             throw new ACException(
                 "Error obteniendo ultimo número de comprobante autorizado",
                 $this,
@@ -96,15 +96,15 @@ class BillerClient extends Client
      * Obtiene puntos de centa autorizados
      * @return int
      */
-    public function getAthorizedSalePoint()
+    public function getAuthorizedSalePoint()
     {
         $request_params = $this->request_manager
-                              ->buildAthorizedSalePointParams($this->_getAuthParams());
+                              ->buildAuthorizedSalePointParams($this->_getAuthParams());
 
         $response = $this->soap_client->FEParamGetPtosVenta($request_params);
 
         $salepoint_num = $this->response_manager
-                              ->validateAndParseAthorizedSalePoint($response);
+                              ->validateAndParseAuthorizedSalePoint($response);
 
         if (!$salepoint_num) {
             throw new ACException(

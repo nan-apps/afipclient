@@ -28,7 +28,7 @@ class BillerRequestManagerTest extends TestCase
     {
         $client_mock = m::mock('AfipClient\Clients\Biller\BillerClient');
         $client_mock->shouldNotReceive('getLastAuthorizedDoc');
-        $client_mock->shouldNotReceive('getAthorizedSalePoint');
+        $client_mock->shouldNotReceive('getAuthorizedSalePoint');
 
         $auth_params = [];
 
@@ -92,7 +92,7 @@ class BillerRequestManagerTest extends TestCase
                     ->once()
                     ->with($data);
 
-        $client_mock->shouldReceive(['getAthorizedSalePoint' => 1])
+        $client_mock->shouldReceive(['getAuthorizedSalePoint' => 1])
                     ->once();
 
         $rsp = $this->request_manager->buildCAEParams($client_mock, $auth_params, $data);
@@ -118,11 +118,11 @@ class BillerRequestManagerTest extends TestCase
     }
 
 
-    public function testBuildAthorizedSalePointParams()
+    public function testBuildAuthorizedSalePointParams()
     {
         $auth_params = ['auth' => 'params'];
         
-        $rsp = $this->request_manager->buildAthorizedSalePointParams($auth_params);
+        $rsp = $this->request_manager->buildAuthorizedSalePointParams($auth_params);
 
         $this->assertEquals($rsp, [
             'Auth' => ['auth' => 'params']

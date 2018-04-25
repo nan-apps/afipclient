@@ -26,7 +26,7 @@ class BillerRequestManager
             $invoice_number = $data['CbteDesde'];
         }
 
-        $sale_point = !empty($data['PtoVta']) ? $data['PtoVta'] : $biller_client->getAthorizedSalePoint();
+        $sale_point = !empty($data['PtoVta']) ? $data['PtoVta'] : $biller_client->getAuthorizedSalePoint();
 
         $params = [
             'Auth' => $auth_params,
@@ -51,28 +51,17 @@ class BillerRequestManager
                                     'ImpTrib' => $data['ImpTrib'],
                                     'ImpOpEx' => $data['ImpOpEx'],
                                     'ImpTotal' => $data['ImpTotal'],
-                                    'FchServDesde' => $data['FchServDesde'],
-                                    'FchServHasta' => $data['FchServHasta'],
-                                    'FchVtoPago' => $data['FchVtoPago'],
+                                    'FchServDesde' => isset($data['FchServDesde']) ? $data['FchServDesde'] : null,
+                                    'FchServHasta' => isset($data['FchServHasta']) ? $data['FchServHasta'] : null,
+                                    'FchVtoPago' => isset($data['FchVtoPago']) ? $data['FchVtoPago'] : null,
                                     'MonId' => $data['MonId'],
                                     'MonCotiz' => $data['MonCotiz'],
+                                    'Iva' => isset($data['Iva']) ? $data['Iva'] : null
                                 ],
                             ],
                         ],
         ];
-
-        if ($data['ImpIVA']) {
-            $params['FeCAEReq']['FeDetReq']['ImpIVA'] = [
-                //alicuotas
-            ];
-        }
-
-        if ($data['ImpTrib']) {
-            $params['FeCAEReq']['FeDetReq']['Tributos'] = [
-                //tributos
-            ];
-        }
-
+    
         return $params;
     }
 
@@ -94,7 +83,7 @@ class BillerRequestManager
      * @param array $auth_params
      * @return array $params
      */
-    public function buildAthorizedSalePointParams($auth_params)
+    public function buildAuthorizedSalePointParams($auth_params)
     {
         return [ 'Auth' => $auth_params ];
     }
