@@ -199,7 +199,7 @@ class BillerClientTest extends TestCase
         $biller->getLastAuthorizedDoc(['data']);
     }
 
-    public function testGetAthorizedSalePoint()
+    public function testGetAuthorizedSalePoint()
     {
         $provider_mock = m::mock('AfipClient\AuthParamsProvider');
         $provider_mock->shouldReceive(['getAuthParams' => ['auth_params'] ])
@@ -207,7 +207,7 @@ class BillerClientTest extends TestCase
                       ->once();
 
         $req_mock = m::mock('AfipClient\Clients\Biller\BillerRequestManager');
-        $req_mock->shouldReceive('buildAthorizedSalePointParams')
+        $req_mock->shouldReceive('buildAuthorizedSalePointParams')
                  ->once()
                  ->with(['auth_params'])
                  ->andReturn(['request']);
@@ -222,7 +222,7 @@ class BillerClientTest extends TestCase
 
 
         $rsp_mock = m::mock('AfipClient\Clients\Biller\BillerResponseManager');
-        $rsp_mock->shouldReceive('validateAndParseAthorizedSalePoint')
+        $rsp_mock->shouldReceive('validateAndParseAuthorizedSalePoint')
                  ->once()
                  ->with($response)
                  ->andReturn(1);
@@ -234,14 +234,14 @@ class BillerClientTest extends TestCase
             $rsp_mock
         );
 
-        $this->assertEquals($biller->getAthorizedSalePoint(['data']), 1);
+        $this->assertEquals($biller->getAuthorizedSalePoint(['data']), 1);
     }
 
 
     /**
      * @expectedException AfipClient\ACException
      */
-    public function testGetAthorizedSalePointError()
+    public function testGetAuthorizedSalePointError()
     {
         $provider_mock = m::mock('AfipClient\AuthParamsProvider');
         $provider_mock->shouldReceive(['getAuthParams' => ['auth_params'] ])
@@ -249,7 +249,7 @@ class BillerClientTest extends TestCase
                       ->once();
 
         $req_mock = m::mock('AfipClient\Clients\Biller\BillerRequestManager');
-        $req_mock->shouldReceive('buildAthorizedSalePointParams')
+        $req_mock->shouldReceive('buildAuthorizedSalePointParams')
                  ->once()
                  ->with(['auth_params'])
                  ->andReturn(['request']);
@@ -264,7 +264,7 @@ class BillerClientTest extends TestCase
 
 
         $rsp_mock = m::mock('AfipClient\Clients\Biller\BillerResponseManager');
-        $rsp_mock->shouldReceive('validateAndParseAthorizedSalePoint')
+        $rsp_mock->shouldReceive('validateAndParseAuthorizedSalePoint')
                  ->once()
                  ->with($response)
                  ->andReturn(false);
@@ -276,6 +276,6 @@ class BillerClientTest extends TestCase
             $rsp_mock
         );
 
-        $biller->getAthorizedSalePoint(['data']);
+        $biller->getAuthorizedSalePoint(['data']);
     }
 }

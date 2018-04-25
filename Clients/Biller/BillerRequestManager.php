@@ -83,7 +83,7 @@ class BillerRequestManager
      * @param array $auth_params
      * @return array $params
      */
-    public function buildAthorizedSalePointParams($auth_params)
+    public function buildAuthorizedSalePointParams($auth_params)
     {
         return [ 'Auth' => $auth_params ];
     }

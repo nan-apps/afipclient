@@ -115,7 +115,7 @@ class BillerResponseManagerTest extends TestCase
         $this->assertEquals($this->response_manager->validateAndParseLastAuthorizedDocRsp($fake_response), 1);
     }
 
-    public function testValidateAndParseAthorizedSalePointWithErrors()
+    public function testValidateAndParseAuthorizedSalePointWithErrors()
     {
         $fake_response = (object)[
             'FEParamGetPtosVentaResult' => (object) [
@@ -123,10 +123,10 @@ class BillerResponseManagerTest extends TestCase
             ]
         ];
 
-        $this->assertFalse($this->response_manager->validateAndParseAthorizedSalePoint($fake_response));
+        $this->assertFalse($this->response_manager->validateAndParseAuthorizedSalePoint($fake_response));
     }
 
-    public function testValidateAndParseAthorizedSalePoint()
+    public function testValidateAndParseAuthorizedSalePoint()
     {
         $fake_response = (object)[
             'FEParamGetPtosVentaResult' => (object) [
@@ -138,6 +138,6 @@ class BillerResponseManagerTest extends TestCase
             ]
         ];
 
-        $this->assertEquals($this->response_manager->validateAndParseAthorizedSalePoint($fake_response), 1);
+        $this->assertEquals($this->response_manager->validateAndParseAuthorizedSalePoint($fake_response), 1);
     }
 }

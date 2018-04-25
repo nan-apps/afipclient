@@ -99,12 +99,12 @@ class BillerClient extends Client
     public function getAuthorizedSalePoint()
     {
         $request_params = $this->request_manager
-                              ->buildAthorizedSalePointParams($this->_getAuthParams());
+                              ->buildAuthorizedSalePointParams($this->_getAuthParams());
 
         $response = $this->soap_client->FEParamGetPtosVenta($request_params);
 
         $salepoint_num = $this->response_manager
-                              ->validateAndParseAthorizedSalePoint($response);
+                              ->validateAndParseAuthorizedSalePoint($response);
 
         if (!$salepoint_num) {
             throw new ACException(

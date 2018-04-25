@@ -64,7 +64,7 @@ class BillerResponseManager
      * @param Array $response
      * @return int|boolean
      */
-    public function validateAndParseAthorizedSalePoint(\stdClass $response)
+    public function validateAndParseAuthorizedSalePoint(\stdClass $response)
     {
         if (isset($response->FEParamGetPtosVentaResult->Errors)) {
             return false;
