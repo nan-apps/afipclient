@@ -18,9 +18,8 @@ try {
 
     $conf = include( 'conf.php' );
 
-    /* Servicio de facturación */            
+    /* Servicio de facturación */
     $biller = BillerFactory::create( $conf );
-
 
     $data = array(
         'Cuit' => '123456789',
@@ -33,17 +32,24 @@ try {
         'CbteDesde' => null, //para que lo calcule uitlizando el web service 
         'CbteHasta' => null, //para que lo calcule uitlizando el web service
         'CbteFch' => date('Ymd'),
-        'ImpNeto' => 0,
-        'ImpTotConc' => 1, 
-        'ImpIVA' => 0,
+        'ImpNeto' => 0, //para factu A
+        'ImpTotConc' => 1,  //para factu B
+        'ImpIVA' => 0, //para factu A
         'ImpTrib' => 0,
         'ImpOpEx' => 0,
         'ImpTotal' => 1, 
         'FchServDesde' => date("Ymd"), 
         'FchServHasta' => date("Ymd"), 
         'FchVtoPago' => date("Ymd"),
-        'MonId' => 'PES', //PES 
-        'MonCotiz' => 1, //1 
+        'MonId' => 'PES',
+        'MonCotiz' => 1,
+        /*'Iva' => array( //para factu A
+            'AlicIva' => array(
+                'Id' => 5, //0.21
+                'BaseImp' => 1,
+                'Importe' => 0.21,
+            )
+        )*/
     );
 
 
