@@ -2,7 +2,6 @@
 namespace AfipClient\Clients\Biller;
 
 use AfipClient\ACException;
-use AfipClient\ACHelper;
 use AfipClient\AuthParamsProvider;
 use AfipClient\Clients\Client;
 use AfipClient\Clients\Biller\BillerRequestManager;
@@ -26,19 +25,19 @@ class BillerClient extends Client
      * @param BillerResponseManager $biller_response el objeto encargado de manejar la respuesta
      */
     public function __construct( 
-                                 \SoapClient $soap_client,
-                                 AuthParamsProvider $auth_params_provider,
-                                 BillerRequestManager $request_manager,
-                                 BillerResponseManager $response_manager
- 
-    ) {
+       \SoapClient $soap_client,
+       AuthParamsProvider $auth_params_provider,
+       BillerRequestManager $request_manager,
+       BillerResponseManager $response_manager
+
+   ) {
         $this->soap_client = $soap_client;
         $this->auth_params_provider = $auth_params_provider;
         $this->request_manager = $request_manager;
         $this->response_manager = $response_manager;
     }
 
-        
+
     /**
      * Solicitar cae y fecha de vencimiento al WS de facturacion
      * @param array $data
@@ -59,7 +58,7 @@ class BillerClient extends Client
             throw new ACException(
                 "Error obteniendo CAE",
                 $this,
-                                   ACHelper::export_response($response)
+                $response
             );
         }
 
@@ -74,18 +73,18 @@ class BillerClient extends Client
     public function getLastAuthorizedDoc($data)
     {
         $request_params = $this->request_manager
-                               ->buildLastAuthorizedDocParams($this->_getAuthParams(), $data);
+        ->buildLastAuthorizedDocParams($this->_getAuthParams(), $data);
 
         $response = $this->soap_client->FECompUltimoAutorizado($request_params);
 
         $doc_number = $this->response_manager
-                           ->validateAndParseLastAuthorizedDocRsp($response);
+        ->validateAndParseLastAuthorizedDocRsp($response);
 
         if (!$doc_number && $doc_number !== 0) {
             throw new ACException(
                 "Error obteniendo ultimo número de comprobante autorizado",
                 $this,
-                                   ACHelper::export_response($response)
+                $response
             );
         }
 
@@ -99,21 +98,18 @@ class BillerClient extends Client
     public function getAuthorizedSalePoint()
     {
         $request_params = $this->request_manager
-                              ->buildAuthorizedSalePointParams($this->_getAuthParams());
+        ->buildAuthorizedSalePointParams($this->_getAuthParams());
 
         $response = $this->soap_client->FEParamGetPtosVenta($request_params);
 
         $salepoint_num = $this->response_manager
-                              ->validateAndParseAuthorizedSalePoint($response);
+        ->validateAndParseAuthorizedSalePoint($response);
 
         if (!$salepoint_num) {
             throw new ACException(
-            
                 "Error obteniendo ultimo número de comprobante autorizado",
-            
                 $this,
-                                   ACHelper::export_response($response)
-            
+                $response
             );
         }
         
