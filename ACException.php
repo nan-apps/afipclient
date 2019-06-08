@@ -8,7 +8,7 @@ class ACException extends \Exception
 {
     protected $client;
     protected $ws_response;
-    protected $ws_response_obj;
+    protected $ws_response_export;
 
     /**
      * @param string $message
@@ -19,8 +19,8 @@ class ACException extends \Exception
     {
         parent::__construct($message, $code);
 
-        $this->ws_response = ACHelper::export_response($ws_response);
-        $this->ws_response_obj = $ws_response;
+        $this->ws_response = $ws_response;
+        $this->ws_response_export = ACHelper::export_response($ws_response);
         $this->client = $client;
     }
 
@@ -35,9 +35,9 @@ class ACException extends \Exception
      /**
      * @return stdClass
      */
-    public function getWSResponseObject()
+    public function getWSResponseExport()
     {
-        return $this->ws_response_obj;
+        return $this->ws_response_export;
     }
 
     /**
