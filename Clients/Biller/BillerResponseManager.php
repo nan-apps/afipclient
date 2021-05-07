@@ -19,7 +19,7 @@ class BillerResponseManager
     public function validateAndParseCAERsp(\stdClass $response)
     {
         if (isset($response->FECAESolicitarResult->Errors) ||
-            !$response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE
+            !isset($response->FECAESolicitarResult->FeDetResp->FECAEDetResponse->CAE)
             ) {
             return false;
         }

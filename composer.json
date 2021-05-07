@@ -1,5 +1,5 @@
 {
-    "name": "nan-apps/AfipClient",
+    "name": "nan-apps/afipclient",
     "description": "Clases para interactuar con api de Afip",
     "type": "library",
     "require": {

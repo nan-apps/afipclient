@@ -20,7 +20,7 @@ class ACException extends \Exception
         parent::__construct($message, $code);
 
         $this->ws_response = $ws_response;
-        $this->ws_response_export = ACHelper::export_response($ws_response);
+        $this->ws_response_export = $ws_response ? ACHelper::export_response($ws_response) : NULL;
         $this->client = $client;
     }
 
