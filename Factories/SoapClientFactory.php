@@ -20,6 +20,7 @@ class SoapClientFactory
                 [
                     'soap_version'   => SOAP_1_2,
                     'location'       => $end_point,
+                    'stream_context' => stream_context_create(['ssl' => ['ciphers'=>'DEFAULT@SECLEVEL=1']])
                 ]
         
         );
