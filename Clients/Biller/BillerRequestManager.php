@@ -56,7 +56,8 @@ class BillerRequestManager
                                     'FchVtoPago' => isset($data['FchVtoPago']) ? $data['FchVtoPago'] : null,
                                     'MonId' => $data['MonId'],
                                     'MonCotiz' => $data['MonCotiz'],
-                                    'Iva' => isset($data['Iva']) ? $data['Iva'] : null
+                                    'Iva' => isset($data['Iva']) ? $data['Iva'] : null,
+                                    'CbtesAsoc' => isset($data['CbtesAsoc']) ? $data['CbtesAsoc'] : null
                                 ],
                             ],
                         ],

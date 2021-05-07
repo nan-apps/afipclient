@@ -60,9 +60,15 @@ try {
         'FchServHasta' => date("Ymd"), 
         'FchVtoPago' => date("Ymd"),
         'MonId' => 'PES', //PES 
-        'MonCotiz' => 1, //1 
+        'MonCotiz' => 1, //1
+        'CbtesAsoc' => [ // solo en notas de crédito o débito
+            'CbteAsoc' => [
+                'Tipo' => '06',
+                'PtoVta' => 1,
+                'Nro' => 1
+            ]
+        ]
     );
-
 
     //solicita cae y cae_validdate y mas
 
